@@ -10,8 +10,7 @@ tab_width = 2
 # игнорируем длинные строки
 max_line_length = off
 
-[*.(ts, js, css)]
-curly_bracket_next_line = true
+[*.{ts, js, css, py}]
 trim_trailing_whitespace = true
 
 [*.min.*]

@@ -1,4 +1,6 @@
-from flask import Flask, request
+"""Flask application"""
+
+from flask import Flask
 from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
