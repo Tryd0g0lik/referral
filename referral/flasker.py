@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request
-from flask_jwt_extended import JWTManager, create_access_token
+from flask import Flask, request
+from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
 jwt = JWTManager(app)
+app.config["JWT_COOKIE_SECURE"] = True
