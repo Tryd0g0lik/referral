@@ -1,0 +1,10 @@
+[flake8]
+extend-ignore = E111, E302, E402, E501, E303
+exclude =
+    */venv/*,
+    */.github,
+    */.*,
+    */main.py,
+    */.editorconfig
+    */archive
+    */Python
