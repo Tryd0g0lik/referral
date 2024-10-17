@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 
 from referral.tokenization import generate_unique_token
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 jwt = JWTManager(app)
 
 app.config["JWT_COOKIE_SECURE"] = True

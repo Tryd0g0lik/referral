@@ -6,6 +6,7 @@ from flask import render_template, request  # jsonify,
 
 
 def app_router(app_):
+    """Total function"""
     @app_.route(
         "/",
         methods=[
@@ -29,16 +30,18 @@ def app_router(app_):
             "index.html",
         )
 
-    # @app_.route(
-    #     "/users",
-    #     methods=[
-    #         "POST",
-    #     ],
-    # )
-    # async def register():
-    #     # Логика регистрации пользователя
-    #     pass
-    #     return
+    @app_.route(
+        "/register",
+        methods=[
+            "GET",
+        ],
+    )
+    async def register():
+        # Логика регистрации пользователя
+
+        # response = render_template(render_template("users/register.html"))
+        return render_template("users/register.html")
+
     # @app_.route(
     #     "/login",
     #     methods=[

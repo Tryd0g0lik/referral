@@ -1,1 +1,32 @@
-{% extend 'users/register.html' %}
+{% extends 'layout/basis.html' %}
+
+<!--{ % extends "admin/login.html" % }-->
+
+
+
+  <title>{% block title %}{{title}}{% endblock title %}</title>
+
+<!--		{ % load static % }-->
+		{% block extrahead %}
+<!--		{{ block.super }}-->
+			<link href="{{ url_for('static', filename='account/css/') }}{{account_styles}}" rel="stylesheet" />
+<!--			<script src="{ { url_for('static', filename='account/javascripts/' } } { {account_js} }"></script>-->
+		{% endblock extrahead %}
+
+
+ {% block header %}
+    <h1 class="display-1 text-center">It's page for your registration </h1>
+  {% endblock header %}
+
+
+{% block mainRowContribute %}
+	    <!-- { { block.super } } -->
+	    <p>Custom content added to the login form.</p>
+			<form id="registr">
+<!--		    { % csrf_token % }-->
+		    {{ form }}
+
+	      <button type="submit">Зарегистрироваться</button>
+
+			</form>
+	{% endblock mainRowContribute %}
