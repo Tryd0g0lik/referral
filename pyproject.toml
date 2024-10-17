@@ -25,6 +25,7 @@ black = "^24.8.0"
 flask-bootstrap = "^3.3.7.1"
 flask-jwt-extended = "^4.6.0"
 flask-swagger-ui = "^4.11.1"
+uuid = "^1.30"
 
 [build-system]
 requires = ["poetry-core"]

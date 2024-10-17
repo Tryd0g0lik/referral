@@ -1,14 +1,5 @@
 [MESSAGES CONTROL]
 disable=
-    W0621,
-    W0613,
-    C0116,
-    R0913,
-    W0612,
-    R0914,
-    W0718,
-    C0103,
-    R0901,
     R0903
 ignore-path=
     project_root.settings.py
