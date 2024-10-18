@@ -45,6 +45,7 @@ def app_router():
         # Логика регистрации пользователя
         form = GetFormRegistration()
         conn = get_db_connection()
+        error = "some_view"
         if request.method == "POST" and form.validate_on_submit():
             try:
                 # Pass the form's email field
@@ -70,40 +71,37 @@ def app_router():
                 new_user = Users()
                 new_user.firstname=firstname
                 new_user.set_password(password)
-                
-                # new_user.email=normalized_email
-                # new_user.is_activated=form.is_activated.data
-                # new_user.activate=form.activate.data
-                
-                # Hashing now
-                # password_hash = new_user.set_password(password)
+
                 conn.execute(
                     Users.__table__.insert().values(
                         firstname=new_user.firstname,
                         email=normalized_email,
-                        # Below is True if user was activated
+                        password = new_user.password,
                         is_activated=False,
-                        # Below is a True when a user active
                         activate=False
                     )
                 )
-                # new_user.password = new_user.password_hash
-                # conn.session.add(new_user)
+                
                 conn.session.commit()
-                # if request.method == "POST" and form.validate_on_submit():
-
                 return redirect(url_for("some_view"))
             except ValidationError as e:
                 # Lower is a roll back if received the error.
+                error = "some_view" + str(e)
                 conn.rollback()
                 
             finally:
                 conn.close()
+                print(f"ERRR: {error}")
                 return render_template("users/register.html",
                                        form=form,
-                                       error="some_view")
-        # response = render_template(render_template("users/register.html"))
+                                       error=error)
+                
+        elif not form.validate_on_submit():
+            return render_template("users/register.html", form=form)
+        
         return render_template("users/register.html", form=form)
+        # response = render_template(render_template("users/register.html"))
+        # return render_template("users/register.html", form=form)
 
     @app_.route(
         "/login",
