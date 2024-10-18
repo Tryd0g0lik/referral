@@ -1,6 +1,8 @@
 """Here is a connection with a db of PostgreSQL"""
 
 import psycopg2
+from flask_sqlalchemy import SQLAlchemy
+from flasker import app_, create_flask
 
 from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_DB,
                      PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD,
@@ -15,3 +17,11 @@ def get_db_connection():
         password=PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD,
     )
     return conn
+
+
+def create_db():
+    db = get_db_connection()
+    with app_.open_resource("referral_db.sql", mode="r") as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+    db.close()

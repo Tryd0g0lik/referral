@@ -1,8 +1,12 @@
-from wtforms import BooleanField,  StringField, SubmitField, validators
+"""Flask form for page registration """
+
 from flask_wtf import FlaskForm
+from wtforms import BooleanField, StringField, SubmitField, validators
 
 
 class GetFormRegistration(FlaskForm):
+    """Here is a flask-form for the registrate's page"""
+
     is_activated = BooleanField(
         "Активирован",
         default=False,
@@ -24,15 +28,11 @@ class GetFormRegistration(FlaskForm):
             ),
         ],
     )
-    
+
     email = StringField(
-        "Email",
-        validators=[
-            validators.InputRequired(),
-            validators.Email()
-        ]
+        "Email", validators=[validators.InputRequired(), validators.Email()]
     )
-    
+
     password = StringField(
         "Password",
         validators=[
@@ -47,10 +47,4 @@ class GetFormRegistration(FlaskForm):
             validators.length(min=3, message="Min. (Количество символов) 3."),
         ],
     )
-    submit = SubmitField(
-        "Регистрировать",
-        render_kw={'class': "btn btn-secondary"}
-    )
-
-
- 
+    submit = SubmitField("Регистрировать", render_kw={"class": "btn btn-secondary"})
