@@ -43,17 +43,29 @@ def app_router():
     async def register():
         # Логика регистрации пользователя
         form = GetFormRegistration()
-        firstname = form.firstname
-        password = form.password
-        password2 = form.password2
-        
-        new_user = Users(firstname = firstname)
-        # Hashing now
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        # if request.method == "POST" and form.validate_on_submit():
         if request.method == "POST" and form.validate_on_submit():
+            firstname = form.firstname.data
+            password = form.password.data
+            password2 = form.password2.data
+            # Проверка на пустой пароль
+            if not password:
+                return render_template(
+                    "users/register.html", form=form,
+                    error="Password cannot be empty."
+                    )
+
+            if password != password2:
+                return render_template(
+                    "users/register.html", form=form,
+                    error="Passwords do not match."
+                    )
+            new_user = Users(firstname = firstname)
+            # Hashing now
+            new_user.set_password(password)
+            db.session.add(new_user)
+            db.session.commit()
+            # if request.method == "POST" and form.validate_on_submit():
+        
             return redirect(url_for("some_view"))
         # response = render_template(render_template("users/register.html"))
         return render_template("users/register.html", form=form)

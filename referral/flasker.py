@@ -4,6 +4,7 @@ import os
 
 from flask import Flask
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
 from dotenv_ import (PROJECT_REFERRAL_SECRET_KEY,
@@ -22,7 +23,7 @@ def create_flask():
     app.config.from_object(__name__)
     # jwt = JWTManager(app)
     app.config["CSRF"] = CSRFProtect(app)
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgress:///\
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql:///\
 {PROJECT_REFERRAL_SETTING_POSTGRES_USER}Ж\
 {PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
 {PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:\
@@ -32,6 +33,8 @@ def create_flask():
     app.config["BCRYPT"] = Bcrypt(app)
     app.config["SECRET_KEY"] = PROJECT_REFERRAL_SECRET_KEY
     bootstrap = Bootstrap(app)
+    db = SQLAlchemy(app)
+    app.config["DB"] = db
     app.config["BOOTSTRAP"] = bootstrap
     app.config["DATABASE"] = "/tmp/referral.db"
     app.config.update(
@@ -44,3 +47,4 @@ def create_flask():
 app_ = create_flask()
 csrf = app_.config["CSRF"]
 bcrypt = app_.config["BCRYPT"]
+db = app_.config["DB"]
