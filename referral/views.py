@@ -1,12 +1,17 @@
 """Here a router of the flask app."""
 
-from flask import render_template, request  # jsonify,
+from flask import render_template, request, redirect, url_for  # jsonify,
+
+from referral.flasker import csrf
+from referral.forms.form_registration import GetFormRegistration
+
 
 # from flask_jwt_extended import create_access_token, jwt_required
 
 
 def app_router(app_):
     """Total function"""
+
     @app_.route(
         "/",
         methods=[
@@ -34,13 +39,18 @@ def app_router(app_):
         "/register",
         methods=[
             "GET",
+            "POST"
         ],
     )
+    @csrf.exempt
     async def register():
         # Логика регистрации пользователя
-
+        form = GetFormRegistration()
+        # if request.method == "POST" and form.validate_on_submit():
+        if request.method == "POST" and form.validate_on_submit():
+            return redirect(url_for('some_view'))
         # response = render_template(render_template("users/register.html"))
-        return render_template("users/register.html")
+        return render_template("users/register.html", form=form)
 
     # @app_.route(
     #     "/login",

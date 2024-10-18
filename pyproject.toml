@@ -26,6 +26,8 @@ flask-bootstrap = "^3.3.7.1"
 flask-jwt-extended = "^4.6.0"
 flask-swagger-ui = "^4.11.1"
 uuid = "^1.30"
+flask-wtf = "^1.2.1"
+wtforms = "^3.1.2"
 
 [build-system]
 requires = ["poetry-core"]

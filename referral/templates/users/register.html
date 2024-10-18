@@ -13,20 +13,57 @@
 <!--			<script src="{ { url_for('static', filename='account/javascripts/' } } { {account_js} }"></script>-->
 		{% endblock extrahead %}
 
-
+{% block body %}
  {% block header %}
     <h1 class="display-1 text-center">It's page for your registration </h1>
   {% endblock header %}
 
 
 {% block mainRowContribute %}
-	    <!-- { { block.super } } -->
+<!--   { { block.super() } }-->
+  <div class="form">
 	    <p>Custom content added to the login form.</p>
-			<form id="registr">
-<!--		    { % csrf_token % }-->
-		    {{ form }}
+			<form id="register" method="post">
+         {{ form.csrf_token }} <!-- CSRF защита -->
+         <div class="form-group">
 
-	      <button type="submit">Зарегистрироваться</button>
+            {{ form.firstname() }}
+            {% for error in form.firstname.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+         <div class="form-group">
 
+            {{ form.email(class="form-control") }}
+            {% for error in form.email.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+
+            {{ form.password() }}
+            {% for error in form.password.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+         <div class="form-group">
+
+            {{ form.password2(class="form-control") }}
+            {% for error in form.password2.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+         <div class="form-check">
+            {{ form.is_activated(class="form-check-input") }}
+            {{ form.is_activated.label(class="form-check-label") }}
+        </div>
+        <div class="form-check">
+            {{ form.is_activate(class="form-check-input") }}
+            {{ form.is_activate.label(class="form-check-label") }}
+        </div>
+<!--        <button type="submit" class="btn btn-secondary">-->
+          {{ form.submit() }}
 			</form>
+    </div>
 	{% endblock mainRowContribute %}
+{% endblock body %}
