@@ -45,11 +45,11 @@ def create_flask():
     app.config["BOOTSTRAP"] = bootstrap
     app.config.update(dict(DATABASE=os.path.join(app.root_path, "referral.db")))
     app.config["DATABASE"] = "/tmp/referral.db"
-    try:
-        with app.app_context():
-            db.create_all()
-    except Exception as err:
-        print(f"ERROR from start app: {err}")
+    # try:
+    #     with app.app_context():
+    #         db.create_all()
+    # except Exception as err:
+    #     print(f"ERROR from start app: {err}")
     return app
 
 
