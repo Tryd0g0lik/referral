@@ -1,9 +1,10 @@
 """Here a router of the flask app."""
-from cfgv import ValidationError
-from flask import redirect, render_template, request, url_for, \
-    jsonify  # jsonify,
-from flask_jwt_extended import create_access_token
 
+from cfgv import ValidationError
+from flask import (jsonify, redirect, render_template, request,  # jsonify,
+                   url_for)
+
+# from flask_jwt_extended import create_access_token
 from referral.flasker import app_, csrf
 from referral.forms.form_registration import GetFormRegistration
 from referral.models import Users, db
@@ -45,38 +46,35 @@ def app_router():
         form = GetFormRegistration()
         if request.method == "POST" and form.validate_on_submit():
             try:
-                normalized_email = form.validate_email(
-                    form.email
-                    )  # Pass the form's email field
-           
+                # Pass the form's email field
+                normalized_email = form.validate_email(form.email)
                 firstname = form.firstname.data
                 password = form.password.data
                 password2 = form.password2.data
                 # Проверка на пустой пароль
                 if not password:
                     return render_template(
-                        "users/register.html", form=form,
-                        error="Password cannot be empty."
-                        )
-    
+                        "users/register.html",
+                        form=form,
+                        error="Password cannot be empty.",
+                    )
+
                 if password != password2:
                     return render_template(
-                        "users/register.html", form=form,
-                        error="Passwords do not match."
-                        )
-                
-                new_user = Users(firstname = firstname)
+                        "users/register.html",
+                        form=form,
+                        error="Passwords do not match.",
+                    )
+                new_user = Users(firstname=firstname, email=normalized_email)
                 # Hashing now
                 new_user.set_password(password)
                 db.session.add(new_user)
                 db.session.commit()
                 # if request.method == "POST" and form.validate_on_submit():
-            
+
                 return redirect(url_for("some_view"))
             except ValidationError as e:
-                return render_template(
-                    "users/register.html", form=form, error=str(e)
-                )
+                return render_template("users/register.html", form=form, error=str(e))
         # response = render_template(render_template("users/register.html"))
         return render_template("users/register.html", form=form)
 
@@ -100,7 +98,7 @@ def app_router():
                 return "Invalid username or password"
         # Проверка пользователя и создание токена
         # access_token = create_access_token(identity=firstname)
-        return jsonify(access_token='data')
+        return jsonify(access_token="data")
 
     # @app_.route(
     #     "/registrator",
