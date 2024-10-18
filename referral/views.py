@@ -1,9 +1,12 @@
 """Here a router of the flask app."""
 
-from flask import redirect, render_template, request, url_for  # jsonify,
+from flask import redirect, render_template, request, url_for, \
+    jsonify  # jsonify,
+from flask_jwt_extended import create_access_token
 
 from referral.flasker import app_, csrf
 from referral.forms.form_registration import GetFormRegistration
+from referral.models import Users, db
 
 
 def app_router():
@@ -40,25 +43,42 @@ def app_router():
     async def register():
         # Логика регистрации пользователя
         form = GetFormRegistration()
+        firstname = form.firstname
+        password = form.password
+        password2 = form.password2
+        
+        new_user = Users(firstname = firstname)
+        # Hashing now
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
         # if request.method == "POST" and form.validate_on_submit():
         if request.method == "POST" and form.validate_on_submit():
             return redirect(url_for("some_view"))
         # response = render_template(render_template("users/register.html"))
         return render_template("users/register.html", form=form)
 
-    # @app_.route(
-    #     "/login",
-    #     methods=[
-    #         "POST",
-    #     ],
-    # )
-    # async def login():
-    #     # Логика аутентификации пользователя
-    #     username = await request.json.get("username")
-    #     password = await request.json.get("password")
-    #     # Проверка пользователя и создание токена
-    #     access_token = create_access_token(identity=username)
-    #     return jsonify(access_token=access_token)
+    @app_.route(
+        "/login",
+        methods=[
+            "GET",
+            "POST",
+        ],
+    )
+    async def login():
+        # Логика аутентификации пользователя
+        if request.method == "POST":
+            firstname = request.form["firstname"]
+            password = request.form["password"]
+            user = Users.query.filter_by(firstname=firstname).first()
+            # Сравниваем хеши
+            if user and Users.check_password(password):
+                return "login successful!"
+            else:
+                return "Invalid username or password"
+        # Проверка пользователя и создание токена
+        # access_token = create_access_token(identity=firstname)
+        return jsonify(access_token='data')
 
     # @app_.route(
     #     "/registrator",

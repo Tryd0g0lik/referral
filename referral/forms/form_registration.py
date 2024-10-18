@@ -14,7 +14,7 @@ class GetFormRegistration(FlaskForm):
             validators.Optional(),
         ],
     )
-    is_activate = BooleanField(
+    activate = BooleanField(
         "Активный", default=False, validators=[validators.Optional()]
     )
     firstname = StringField(
