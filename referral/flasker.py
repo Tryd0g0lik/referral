@@ -40,7 +40,7 @@ def create_flask():
     app.config["SECRET_KEY"] = PROJECT_REFERRAL_SECRET_KEY
     bootstrap = Bootstrap(app)
     db = SQLAlchemy(app)
-    db.init_app(app)
+    # db.init_app(app)
     app.config["DB"] = db
     app.config["BOOTSTRAP"] = bootstrap
     app.config["DATABASE"] = "/tmp/referral.db"
