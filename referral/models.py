@@ -19,11 +19,11 @@ def get_db_connection():
 
 
 def create_db():
-    db = get_db_connection()
-    with app_.open_resource("referral_db.sql", mode="r") as f:
-        db.cursor().executescript(f.read())
-    db.commit()
-    db.close()
+    conn = get_db_connection()
+    with app_.open_resource("referral.sql", mode="r") as f:
+        conn.cursor().executescript(f.read())
+    conn.commit()
+    conn.close()
 
 
 class Users(db.Model):

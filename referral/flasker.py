@@ -44,7 +44,7 @@ def create_flask():
     app.config["DB"] = db
     app.config["BOOTSTRAP"] = bootstrap
     app.config.update(dict(DATABASE=os.path.join(app.root_path, "referral.db")))
-    app.config["DATABASE"] = "/tmp/referral.db"
+    app.config["DATABASE"] = "referral.db"
     # try:
     #     with app.app_context():
     #         db.create_all()
