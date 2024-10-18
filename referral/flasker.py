@@ -22,34 +22,36 @@ def create_flask():
     :return: app flask
     """
     app = Flask(__name__, template_folder="templates")
+    
     app.config.from_object(__name__)
     # jwt = JWTManager(app)
     app.config["CSRF"] = CSRFProtect(app)
-   
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:123@localhost/referral/'
+    # app.config.update(
+    #     dict(
+    #         DATABASE=os.path.join(
+    #             app.root_path,
+    #             f"{PROJECT_REFERRAL_SETTING_POSTGRES_DB}.db"
+    #         )
+    #     )
+    # )
+    # 'postgresql://postgres:123@localhost/moneys/'
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql:///{os.path.join(basedir, 'blog.db')}"
+    db = SQLAlchemy(app)
+    app.config["DB"] = db
+
     
-#         f"postgresql:///\
-# {PROJECT_REFERRAL_SETTING_POSTGRES_USER}:\
-# {PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
-# {PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:\
-# {PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/\
-# {PROJECT_REFERRAL_SETTING_POSTGRES_DB}/"
     
     app.config["JWT_COOKIE_SECURE"] = True
+    # app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["BCRYPT"] = Bcrypt(app)
     app.config["SECRET_KEY"] = PROJECT_REFERRAL_SECRET_KEY
     bootstrap = Bootstrap(app)
-    db = SQLAlchemy(app)
-    # db.init_app(app)
-    app.config["DB"] = db
+    
     app.config["BOOTSTRAP"] = bootstrap
-    app.config.update(dict(DATABASE=os.path.join(app.root_path, "referral.db")))
-    app.config["DATABASE"] = "referral.db"
-    # try:
-    #     with app.app_context():
-    #         db.create_all()
-    # except Exception as err:
-    #     print(f"ERROR from start app: {err}")
+    
+    # app.config["DATABASE"] = "referral.db"
+    
     return app
 
 
