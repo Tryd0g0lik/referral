@@ -71,16 +71,16 @@ def app_router():
                 new_user.firstname=firstname
                 new_user.set_password(password)
                 
-                new_user.email=normalized_email
-                new_user.is_activated=form.is_activated.data
-                new_user.activate=form.activate.data
+                # new_user.email=normalized_email
+                # new_user.is_activated=form.is_activated.data
+                # new_user.activate=form.activate.data
                 
                 # Hashing now
                 # password_hash = new_user.set_password(password)
                 conn.execute(
-                    Users.__table__.insert().value(
+                    Users.__table__.insert().values(
                         firstname=new_user.firstname,
-                        email=form.email.data,
+                        email=normalized_email,
                         # Below is True if user was activated
                         is_activated=False,
                         # Below is a True when a user active
