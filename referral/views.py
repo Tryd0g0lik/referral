@@ -1,5 +1,5 @@
 """Here a router of the flask app."""
-
+from cfgv import ValidationError
 from flask import redirect, render_template, request, url_for, \
     jsonify  # jsonify,
 from flask_jwt_extended import create_access_token
@@ -44,29 +44,39 @@ def app_router():
         # Логика регистрации пользователя
         form = GetFormRegistration()
         if request.method == "POST" and form.validate_on_submit():
-            firstname = form.firstname.data
-            password = form.password.data
-            password2 = form.password2.data
-            # Проверка на пустой пароль
-            if not password:
+            try:
+                normalized_email = form.validate_email(
+                    form.email
+                    )  # Pass the form's email field
+           
+                firstname = form.firstname.data
+                password = form.password.data
+                password2 = form.password2.data
+                # Проверка на пустой пароль
+                if not password:
+                    return render_template(
+                        "users/register.html", form=form,
+                        error="Password cannot be empty."
+                        )
+    
+                if password != password2:
+                    return render_template(
+                        "users/register.html", form=form,
+                        error="Passwords do not match."
+                        )
+                
+                new_user = Users(firstname = firstname)
+                # Hashing now
+                new_user.set_password(password)
+                db.session.add(new_user)
+                db.session.commit()
+                # if request.method == "POST" and form.validate_on_submit():
+            
+                return redirect(url_for("some_view"))
+            except ValidationError as e:
                 return render_template(
-                    "users/register.html", form=form,
-                    error="Password cannot be empty."
-                    )
-
-            if password != password2:
-                return render_template(
-                    "users/register.html", form=form,
-                    error="Passwords do not match."
-                    )
-            new_user = Users(firstname = firstname)
-            # Hashing now
-            new_user.set_password(password)
-            db.session.add(new_user)
-            db.session.commit()
-            # if request.method == "POST" and form.validate_on_submit():
-        
-            return redirect(url_for("some_view"))
+                    "users/register.html", form=form, error=str(e)
+                )
         # response = render_template(render_template("users/register.html"))
         return render_template("users/register.html", form=form)
 

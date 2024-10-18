@@ -1,7 +1,9 @@
 """Flask form for page registration """
-
+from cfgv import ValidationError
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, SubmitField, validators
+from email_validator import validate_email, EmailNotValidError
+
 
 
 class GetFormRegistration(FlaskForm):
@@ -30,7 +32,9 @@ class GetFormRegistration(FlaskForm):
     )
 
     email = StringField(
-        "Email", validators=[validators.InputRequired(), validators.Email()]
+        "Email", validators=[validators.InputRequired(),
+                             validators.Email(),
+                             validators.DataRequired()]
     )
 
     password = StringField(
@@ -48,3 +52,15 @@ class GetFormRegistration(FlaskForm):
         ],
     )
     submit = SubmitField("Регистрировать", render_kw={"class": "btn btn-secondary"})
+    
+    def validate_email(selfform, email):
+        
+        if len(email.data) < 7:
+            raise ValidationError("We're sorry, you must be 13 or older to register")
+        try:
+            emailinfo = validate_email(email, check_deliverability=False)
+            email = emailinfo.normalized
+            return email
+        except EmailNotValidError as err:
+            print(f"This is an email not a valid: {str(err)}")
+            

@@ -41,7 +41,8 @@ class Users(db.Model):
 
     def set_password(self, password: str):
         """Set of password's hash"""
-        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.password_hash = bcrypt.generate_password_hash(password)\
+            .decode('utf-8')
 
     def check_password(self, password: str):
         """Passwords checking """
