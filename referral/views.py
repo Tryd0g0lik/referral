@@ -65,16 +65,26 @@ def app_router():
                         form=form,
                         error="Passwords do not match.",
                     )
-                new_user = Users(firstname=firstname, email=normalized_email)
-                # Hashing now
+                new_user = Users()
                 new_user.set_password(password)
+                new_user.firstname=firstname
+                new_user.email=normalized_email
+                new_user.is_activated=form.is_activated.data
+                new_user.activate=form.activate.data
+                
+                # Hashing now
+                # password_hash = new_user.set_password(password)
+               
+                # new_user.password = new_user.password_hash
                 db.session.add(new_user)
                 db.session.commit()
                 # if request.method == "POST" and form.validate_on_submit():
 
                 return redirect(url_for("some_view"))
             except ValidationError as e:
-                return render_template("users/register.html", form=form, error=str(e))
+                return render_template("users/register.html",
+                                       form=form,
+                                       error=str(e))
         # response = render_template(render_template("users/register.html"))
         return render_template("users/register.html", form=form)
 
