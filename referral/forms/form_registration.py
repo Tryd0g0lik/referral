@@ -56,12 +56,12 @@ class GetFormRegistration(FlaskForm):
     )
     submit = SubmitField("Регистрировать", render_kw={"class": "btn btn-secondary"})
 
-    def validate_email(selfform, email: str) -> str:
+    def validate_email(self, email) -> str:
 
         if len(email.data) < 7:
             raise ValidationError("We're sorry, you must be 13 or older to register")
         try:
-            emailinfo = validate_email(email, check_deliverability=False)
+            emailinfo = validate_email(email.data, check_deliverability=False)
             email = emailinfo.normalized
             return email
         except EmailNotValidError as err:
