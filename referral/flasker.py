@@ -26,7 +26,7 @@ def create_flask():
     # jwt = JWTManager(app)
     app.config["CSRF"] = CSRFProtect(app)
    
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:123@localhost/moneys/'
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:123@localhost/referral/'
     
 #         f"postgresql:///\
 # {PROJECT_REFERRAL_SETTING_POSTGRES_USER}:\
@@ -43,9 +43,13 @@ def create_flask():
     # db.init_app(app)
     app.config["DB"] = db
     app.config["BOOTSTRAP"] = bootstrap
-    app.config["DATABASE"] = "/tmp/referral.db"
     app.config.update(dict(DATABASE=os.path.join(app.root_path, "referral.db")))
-    
+    app.config["DATABASE"] = "/tmp/referral.db"
+    try:
+        with app.app_context():
+            db.create_all()
+    except Exception as err:
+        print(f"ERROR from start app: {err}")
     return app
 
 
@@ -53,8 +57,3 @@ app_ = create_flask()
 csrf = app_.config["CSRF"]
 bcrypt = app_.config["BCRYPT"]
 db = app_.config["DB"]
-try:
-    with app_.app_context():
-        db.create_all()
-except Exception as err:
-    print(f"ERROR from start app: {err}")
