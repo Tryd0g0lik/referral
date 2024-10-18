@@ -25,13 +25,13 @@ def create_flask():
     app.config.from_object(__name__)
     # jwt = JWTManager(app)
     app.config["CSRF"] = CSRFProtect(app)
-    app.config["SQLALCHEMY_DATABASE_URI"] = \
-        f"postgresql:///\
-{PROJECT_REFERRAL_SETTING_POSTGRES_USER}:\
-{PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
-{PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:\
-{PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/\
-{PROJECT_REFERRAL_SETTING_POSTGRES_DB}/"
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:123@localhost/moneys/'
+#         f"postgresql:///\
+# {PROJECT_REFERRAL_SETTING_POSTGRES_USER}:\
+# {PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
+# {PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:\
+# {PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/\
+# {PROJECT_REFERRAL_SETTING_POSTGRES_DB}/"
     
     app.config["JWT_COOKIE_SECURE"] = True
     app.config["BCRYPT"] = Bcrypt(app)

@@ -7,7 +7,7 @@ from flask import (jsonify, redirect, render_template, request,  # jsonify,
 # from flask_jwt_extended import create_access_token
 from referral.flasker import app_, csrf
 from referral.forms.form_registration import GetFormRegistration
-from referral.models import Users, db
+from referral.models import Users, db, get_db_connection
 
 
 def app_router():
@@ -44,6 +44,7 @@ def app_router():
     async def register():
         # Логика регистрации пользователя
         form = GetFormRegistration()
+        conn = get_db_connection()
         if request.method == "POST" and form.validate_on_submit():
             try:
                 # Pass the form's email field
@@ -65,26 +66,42 @@ def app_router():
                         form=form,
                         error="Passwords do not match.",
                     )
+                
                 new_user = Users()
-                new_user.set_password(password)
                 new_user.firstname=firstname
+                new_user.set_password(password)
+                
                 new_user.email=normalized_email
                 new_user.is_activated=form.is_activated.data
                 new_user.activate=form.activate.data
                 
                 # Hashing now
                 # password_hash = new_user.set_password(password)
-               
+                conn.execute(
+                    Users.__table__.insert().value(
+                        firstname=new_user.firstname,
+                        email=form.email.data,
+                        # Below is True if user was activated
+                        is_activated=False,
+                        # Below is a True when a user active
+                        activate=False
+                    )
+                )
                 # new_user.password = new_user.password_hash
-                db.session.add(new_user)
-                db.session.commit()
+                # conn.session.add(new_user)
+                conn.session.commit()
                 # if request.method == "POST" and form.validate_on_submit():
 
                 return redirect(url_for("some_view"))
             except ValidationError as e:
+                # Lower is a roll back if received the error.
+                conn.rollback()
+                
+            finally:
+                conn.close()
                 return render_template("users/register.html",
                                        form=form,
-                                       error=str(e))
+                                       error="some_view")
         # response = render_template(render_template("users/register.html"))
         return render_template("users/register.html", form=form)
 
