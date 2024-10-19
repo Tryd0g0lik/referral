@@ -10,7 +10,15 @@ from referral.flasker import app_, csrf
 from referral.forms.form_registration import GetFormRegistration
 from .models import Users, Session
 
+from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer
 
+from .postman.sender import send_activation_email
+
+s = URLSafeTimedSerializer(app_.secret_key)
+
+def generate_token(email):
+    return s.dumps(email, salt='email-confirm')
 def app_router():
     """Total function"""
 
@@ -87,6 +95,9 @@ def app_router():
                 sess.add(user)
                 sess.commit()
                 error = "OK"
+                # AUTENTIFICATION
+                token = generate_token(normalized_email)
+                send_activation_email(normalized_email, token)
                 
             except (Exception, ValidationError) as e:
                 # Lower is a roll back if received the error.

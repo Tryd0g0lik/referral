@@ -22,3 +22,15 @@ PROJECT_REFERRAL_SETTING_POSTGRES_PORT = os.getenv(
     "PROJECT_REFERRAL_SETTING_POSTGRES_PORT", ""
 )
 PROJECT_REFERRAL_SECRET_KEY = os.getenv("PROJECT_REFERRAL_SECRET_KEY", "")
+EMAIL_HOST = \
+    os.getenv("MAIL_SERVER", "")
+EMAIL_PORT = \
+    os.getenv("EMAIL_PORT", "")
+MAIL_USE_TLS = \
+    os.getenv("MAIL_USE_TLS", "")
+MAIL_USERNAME = \
+    os.getenv("MAIL_USERNAME", "")
+MAIL_PASSWORD = \
+    os.getenv("MAIL_PASSWORD", "")
+MAIL_DEFAULT_SENDER = \
+    os.getenv("MAIL_DEFAULT_SENDER", "")
