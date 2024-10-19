@@ -98,12 +98,14 @@ def app_router():
                 print(f"MESSAGE: {error}")
                 return render_template("users/register.html",
                                        form=form,
-                                       error=error)
+                                       error=error, title="Регистрация")
                 
         elif not form.validate_on_submit():
-            return render_template("users/register.html", form=form)
+            return render_template("users/register.html", form=form,
+                                   title="Регистрация")
         
-        return render_template("users/register.html", form=form)
+        return render_template("users/register.html", form=form,
+                               title="Регистрация")
         # response = render_template(render_template("users/register.html"))
         # return render_template("users/register.html", form=form)
 
@@ -125,6 +127,7 @@ def app_router():
                 return "login successful!"
             else:
                 return "Invalid username or password"
+        
         # Проверка пользователя и создание токена
         # access_token = create_access_token(identity=firstname)
         return jsonify(access_token="data")

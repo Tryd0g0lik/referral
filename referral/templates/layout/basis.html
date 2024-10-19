@@ -17,73 +17,74 @@
 {% endblock style %}
 <body class="container_fluid">
 {% block body %}
-<header>
+  <header>
 
-  {% block header %}
-    <h1 class="display-1 text-center">It's your the Account </h1>
-  {% endblock header %}
-  {% block content %}
-   <h2>O caйте</h2>
-  {% endblock content %}
-{% block headerContribute %}{% endblock headerContribute %}
+    {% block header %}
+      <h1 class="display-1 text-center">It's your the Account </h1>
+    {% endblock header %}
+    {% block content %}
+     <h2>O caйте</h2>
+    {% endblock content %}
+  {% block headerContribute %}{% endblock headerContribute %}
 
-</header>
+  </header>
 
-<main>
-  <div class="row">
-    {% block navbar %}
-      <div class="nav-item navbar navbar-default">
-        <ul class="col nav justify-content-end border nav navbar-nav">
-          <li class="nav-item active">
-            <a href="{{ url_for('upload_main_page') }}" class="nav-link" >
-              Главная
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('register') }}"
-               class="nav-link" >Регистрация</a>
-          </li>
-  <!--        { % if user.is_authenticated % }-->
-            <li class="nav-item dropdown">
-              <li class="nav-item">
-                <a href="{{ url_for('upload_main_page') }}" class="nav-link
-                dropdown-toggle" tada-togle="dropdown" role="button"
-                   aria-haspopup="true" aria-expanded="false">
-                  Профиль
-                </a>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
-                    Мои объявления
-                  </a>
-                  <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
-                    Изменить личные данные
-                  </a>
-                  <a href="{{ url_for('upload_main_page') }}" class="dropdown-item">
-                    Изменить пароль
-                  </a>
-                  <a href="{{ url_for('upload_main_page') }}" class="dropdown-item">
-                    Удалить
-                  </a>
-                  <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
-                    Выход
-                  </a>
-                </div>
-              </li>
+  <main>
+    <div class="row">
+      {% block navbar %}
+        <div class="nav-item navbar navbar-default">
+          <ul class="col nav justify-content-end border nav navbar-nav">
+            <li class="nav-item active">
+              <a href="{{ url_for('upload_main_page') }}" class="nav-link" >
+                Главная
+              </a>
             </li>
-  <!--        { % else % }-->
             <li class="nav-item">
-              <a href="{{ url_for('upload_main_page') }}">Вход</a>
+              <a href="{{ url_for('register') }}"
+                 class="nav-link" >Регистрация</a>
             </li>
-  <!--        { % endif % }-->
-        </ul>
-        {% block mainRowContribute %}{% endblock mainRowContribute %}
+    <!--        { % if user.is_authenticated % }-->
+              <li class="nav-item dropdown">
+                <li class="nav-item">
+                  <a href="{{ url_for('upload_main_page') }}" class="nav-link
+                  dropdown-toggle" tada-togle="dropdown" role="button"
+                     aria-haspopup="true" aria-expanded="false">
+                    Профиль
+                  </a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
+                      Мои объявления
+                    </a>
+                    <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
+                      Изменить личные данные
+                    </a>
+                    <a href="{{ url_for('upload_main_page') }}" class="dropdown-item">
+                      Изменить пароль
+                    </a>
+                    <a href="{{ url_for('upload_main_page') }}" class="dropdown-item">
+                      Удалить
+                    </a>
+                    <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
+                      Выход
+                    </a>
+                  </div>
+                </li>
+              </li>
+    <!--        { % else % }-->
+              <li class="nav-item">
+                <a href="{{ url_for('upload_main_page') }}">Вход</a>
+              </li>
+    <!--        { % endif % }-->
+          </ul>
+
+      </div>
+       {% endblock navbar %}
+       {% block mainRowContribute %}{% endblock mainRowContribute %}
+       <section class="body">
+         {% block sectionBody %}{% endblock sectionBody %}
+       </section>
     </div>
-    {% endblock navbar %}
-     <section class="body">
-       {% block sectionBody %}{% endblock sectionBody %}
-     </section>
-  </div>
-</main>
+  </main>
 {% endblock body %}
 </body>
 <!--</head>-->
