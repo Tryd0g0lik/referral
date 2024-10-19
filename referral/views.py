@@ -4,10 +4,15 @@ from datetime import datetime, timedelta
 from cfgv import ValidationError
 from flask import (jsonify, redirect, render_template, request,  # jsonify,
                    url_for)
-
+from flask_login import (LoginManager,
+                         UserMixin,
+                         login_user,
+                         login_required,
+                         logout_user, current_user)
 # from flask_jwt_extended import create_access_token
 from referral.flasker import app_, csrf
 from referral.forms.form_registration import GetFormRegistration
+from .forms.form_login import GetFormAuthorization
 from .models import Users, Session
 
 from itsdangerous import URLSafeTimedSerializer
@@ -16,7 +21,8 @@ from .postman.sender import send_activation_email
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 token_time_activate = set()
 s = URLSafeTimedSerializer(app_.secret_key)
-
+login_manager = LoginManager()
+login_manager.init_app(app_)
 def generate_token(email):
     return s.dumps(email, salt='email-confirm')
 def app_router():
@@ -166,18 +172,26 @@ def app_router():
     )
     async def login():
         # Логика аутентификации пользователя
+        form_loginin = GetFormAuthorization()  # Создаем экземпляр формы
         if request.method == "POST":
-            firstname = request.form["firstname"]
-            password = request.form["password"]
-            user = Users.query.filter_by(firstname=firstname).first()
-            # Сравниваем хеши
-            if user and Users.check_password(password):
-                return "login successful!"
-            else:
-                return "Invalid username or password"
         
-          
-        return render_template("users/login.html", title="Авторизация")
+            if form_loginin.validate_on_submit():
+                email = form_loginin.email.data
+                password = form_loginin.password.data
+            # firstname = request.form["firstname"]
+            # password = request.form["password"]
+            # user = Users.query.filter_by(firstname=firstname).first()
+            # # Сравниваем хеши
+            # if user and Users.check_password(password):
+            #     return "login successful!"
+            # else:
+            #     return "Invalid username or password"
+    
+    
+        return render_template("users/login.html",
+                               title="Авторизация",
+                               current_users=current_user,
+                               form=form_loginin)
 
     @app_.route(
         "/activate/<token>",
@@ -258,6 +272,9 @@ def app_router():
     # async def get_referrals(referral_id):
     #     # Логика получения рефералов
     #     pass
-
+    @login_manager.user_loader
+    def load_user(user_id):
+        # Логика загрузки пользователя из базы данных по user_id
+        return Users.get(user_id)
         
     return app_
