@@ -130,7 +130,8 @@ def app_router():
         
         # Проверка пользователя и создание токена
         # access_token = create_access_token(identity=firstname)
-        return jsonify(access_token="data")
+        # return jsonify(access_token="data")
+        return render_template("users/login.html", title="Авторизация")
 
     # @app_.route(
     #     "/registrator",

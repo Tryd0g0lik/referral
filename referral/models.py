@@ -56,6 +56,8 @@ class Users(Base):
         """Passwords checking"""
         return bcrypt.check_password_hash(self.password, password)
 
+
+
 def create_tables(engines):
     try:
         Base.metadata.drop_all(engines)

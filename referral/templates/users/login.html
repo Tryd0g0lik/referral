@@ -1,0 +1,15 @@
+{% extends 'layout/basis.html' %}
+
+
+{% block title %}Вход{% endblock title %}
+{% block mainRowContribute %}
+  <h2>Вход</h2>
+<!--  { % if user.is_authenticated % }-->
+    Вы уже выполнили вход
+<!--  { % else % }-->
+    <form method="post">
+      <input type="hidden" name="next" value="{{next}}" >
+
+    </form>
+<!--  { % endif % }-->
+{% endblock mainRowContribute %}
