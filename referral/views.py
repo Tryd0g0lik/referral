@@ -12,7 +12,7 @@ from .models import Users, Session
 
 from itsdangerous import URLSafeTimedSerializer
 from itsdangerous import URLSafeTimedSerializer
-
+from flask import redirect, url_for, flash
 from .postman.sender import send_activation_email
 
 s = URLSafeTimedSerializer(app_.secret_key)
@@ -95,7 +95,7 @@ def app_router():
                 sess.add(user)
                 sess.commit()
                 error = "OK"
-                # AUTENTIFICATION
+                # AUTHENTICATION FROM THE EMAIL
                 token = generate_token(normalized_email)
                 send_activation_email(normalized_email, token)
                 
@@ -139,18 +139,51 @@ def app_router():
             else:
                 return "Invalid username or password"
         
-        # Проверка пользователя и создание токена
-        # access_token = create_access_token(identity=firstname)
-        # return jsonify(access_token="data")
+          
         return render_template("users/login.html", title="Авторизация")
 
-    # @app_.route(
-    #     "/registrator",
-    #     methods=[
-    #         "POST",
-    #     ],
-    # )
-    # async def login():
+    @app_.route(
+        "/activate/<token>",
+        methods=[
+            "GET",
+        ],
+    )
+    async def activate(token):
+        """This is activate function"""
+        sess = Session()
+        
+        try:
+            # Логика декодирования токена и активации аккаунта
+            email = s.loads(
+                token, salt='email-confirm', max_age=3600
+                )  # Пример декодирования
+            user = sess.query(Users).filter_by(email=email).first()
+            # user = Users.query.filter_by(email=email).first()
+            
+            if user:
+                user.is_activated = True  # Активируем пользователя
+                sess.commit()
+                flash(
+                    'Your account has been activated! You can now log in.',
+                    'success'
+                    )
+            else:
+                flash('Invalid activation token.', 'danger')
+                return redirect(
+                    url_for('login')
+                    )  # Переадресация на страницу входа
+        
+            return redirect(
+                url_for('login')
+                )  # Переадресация после успешной активации
+    
+        except Exception as e:
+            print(f"[activate]: Error => {e.__str__()}")
+            flash('The activation link is invalid or has expired.', 'danger')
+            return redirect(
+                url_for('login')
+                )  # Переадресация на страницу входа
+           
     # Логика аутентификации пользователя
     # username = await request.json.get("username")
     # email = await request.json.get("email")
