@@ -1,5 +1,5 @@
 """Here a router of the flask app."""
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from cfgv import ValidationError
 from flask import (jsonify, redirect, render_template, request,  # jsonify,
@@ -15,6 +15,7 @@ from itsdangerous import URLSafeTimedSerializer
 from flask import redirect, url_for, flash
 from .postman.sender import send_activation_email
 
+token_time_activate = set()
 s = URLSafeTimedSerializer(app_.secret_key)
 
 def generate_token(email):
@@ -92,12 +93,20 @@ def app_router():
                     activate=False,
                 )
                 
-                sess.add(user)
-                sess.commit()
-                error = "OK"
+                # sess.add(user)
+                # sess.commit()
+                # error = "OK"
                 # AUTHENTICATION FROM THE EMAIL
                 token = generate_token(normalized_email)
-                send_activation_email(normalized_email, token)
+                if normalized_email not in token_time_activate:
+                    user.activation_token = token
+                    user.token_created_at = datetime.utcnow()
+                    send_activation_email(normalized_email, token)
+                    error = "OK"
+                else:
+                    error = "NOT OK"
+                sess.add(user)
+                sess.commit()
                 
             except (Exception, ValidationError) as e:
                 # Lower is a roll back if received the error.
@@ -155,27 +164,37 @@ def app_router():
         try:
             # Логика декодирования токена и активации аккаунта
             email = s.loads(
-                token, salt='email-confirm', max_age=3600
+                token, salt='email-confirm', max_age=120
                 )  # Пример декодирования
             user = sess.query(Users).filter_by(email=email).first()
-            # user = Users.query.filter_by(email=email).first()
-            
-            if user:
-                user.is_activated = True  # Активируем пользователя
-                sess.commit()
-                flash(
-                    'Your account has been activated! You can now log in.',
-                    'success'
-                    )
-            else:
-                flash('Invalid activation token.', 'danger')
-                return redirect(
-                    url_for('login')
-                    )  # Переадресация на страницу входа
-        
+
+            # Логика активации пользователя
+            if user and user.activation_token == token:
+                if user.token_created_at and (
+                  datetime.utcnow() - user.token_created_at) < timedelta(
+                  minutes=2
+                  ):
+                    
+                    # Удаляем токен после активации
+                    user.activation_token = None
+                    # Удаляем время создания токена
+                    user.token_created_at = None
+                    # Активируем пользователя
+                    user.is_activated = True
+                    flash(
+                        'Your account has been activated! You can now log in.',
+                        'success'
+                        )
+                else:
+                    flash('Invalid activation token.', 'danger')
+                    # Переадресация на страницу входа
+                    return redirect(
+                        url_for('login')
+                        )
+            # Переадресация после успешной активации
             return redirect(
                 url_for('login')
-                )  # Переадресация после успешной активации
+                )
     
         except Exception as e:
             print(f"[activate]: Error => {e.__str__()}")
@@ -183,7 +202,9 @@ def app_router():
             return redirect(
                 url_for('login')
                 )  # Переадресация на страницу входа
-           
+        finally:
+            sess.commit()
+            sess.close()
     # Логика аутентификации пользователя
     # username = await request.json.get("username")
     # email = await request.json.get("email")

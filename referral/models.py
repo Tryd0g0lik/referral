@@ -40,6 +40,8 @@ class Users(Base):
     is_activated = sq.Column("is_activated", sq.Boolean())
     activate = sq.Column("activate", sq.Boolean())
     date = sq.Column(sq.DateTime, default=datetime.utcnow)
+    activation_token = sq.Column(sq.String(255), nullable=True)
+    token_created_at = sq.Column(sq.DateTime, nullable=True)
 
     # def __repr__(self):
     #     """How can see a table to the console"""
