@@ -34,3 +34,5 @@ MAIL_PASSWORD = \
     os.getenv("MAIL_PASSWORD", "")
 MAIL_DEFAULT_SENDER = \
     os.getenv("MAIL_DEFAULT_SENDER", "")
+TOKEN_TIME_MINUTE_EXPIRE = \
+    os.getenv("TOKEN_TIME_MINUTE_EXPIRE", "")

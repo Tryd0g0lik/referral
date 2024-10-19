@@ -1,5 +1,5 @@
 """Here is a connection with a db of PostgreSQL"""
-from datetime import datetime
+from datetime import datetime, timedelta
 import sqlalchemy as sq
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
@@ -9,6 +9,7 @@ from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_DB,
                      PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
                      PROJECT_REFERRAL_SETTING_POSTGRES_PORT)
 from .flasker import bcrypt
+
 
 DSN = f'postgresql://{PROJECT_REFERRAL_SETTING_POSTGRES_USER}:\
 {PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
@@ -57,8 +58,7 @@ class Users(Base):
     def check_password(self, password: str):
         """Passwords checking"""
         return bcrypt.check_password_hash(self.password, password)
-
-
+    
 
 def create_tables(engines):
     try:
@@ -69,3 +69,6 @@ def create_tables(engines):
     except Exception as err:
         print(f"[create_table]: Error => {err.__str__()}")
 create_tables(engine)
+
+
+

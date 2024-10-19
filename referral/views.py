@@ -11,10 +11,9 @@ from referral.forms.form_registration import GetFormRegistration
 from .models import Users, Session
 
 from itsdangerous import URLSafeTimedSerializer
-from itsdangerous import URLSafeTimedSerializer
 from flask import redirect, url_for, flash
 from .postman.sender import send_activation_email
-
+from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 token_time_activate = set()
 s = URLSafeTimedSerializer(app_.secret_key)
 
@@ -23,6 +22,32 @@ def generate_token(email):
 def app_router():
     """Total function"""
 
+    def delete_old_users():
+        """Here  all tokens we delete where token time was expired"""
+        sess = Session()
+        try:
+            threshold_time = datetime.utcnow() - timedelta(
+                minutes=int(TOKEN_TIME_MINUTE_EXPIRE)
+            )
+            old_users = sess.query(Users).filter(
+                Users.token_created_at < threshold_time
+            ).all()
+            
+            if len(old_users) > 0:
+                for user in old_users:
+                    sess.delete(user)
+                print("[delete_old_users]: Now the  old users all was removed")
+            else:
+                print(
+                    f"[delete_old_users]: Here not found the old users"
+                    )
+            
+        except Exception as err:
+            print(f"[delete_old_users]: Error => {err.__str__()}")
+        finally:
+            sess.commit()
+            sess.close()
+
     @app_.route(
         "/",
         methods=[
@@ -30,12 +55,15 @@ def app_router():
             "POST",
         ],
     )
-    def upload_main_page():
+    async def upload_main_page():
         """
         Here is a main page uploading
         :return:
         """
         if request.method == "GET":
+            # Удаляем users которые просрочили подтверждение email через
+            # ссылку-токен на почте.
+            delete_old_users()
             pass
         elif request.method == "POST":
             # Предположим, что вы получаете данные из формы
@@ -172,7 +200,7 @@ def app_router():
             if user and user.activation_token == token:
                 if user.token_created_at and (
                   datetime.utcnow() - user.token_created_at) < timedelta(
-                  minutes=2
+                  minutes=int(TOKEN_TIME_MINUTE_EXPIRE)
                   ):
                     
                     # Удаляем токен после активации
@@ -191,6 +219,12 @@ def app_router():
                     return redirect(
                         url_for('login')
                         )
+            else:
+                # Переадресация на страницу входа. Токен не найден.
+                flash('Token not found', 'danger')
+                return redirect(
+                    url_for('login')
+                )
             # Переадресация после успешной активации
             return redirect(
                 url_for('login')
@@ -225,4 +259,5 @@ def app_router():
     #     # Логика получения рефералов
     #     pass
 
+        
     return app_

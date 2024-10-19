@@ -15,8 +15,18 @@
   <link rel="stylesheet" type="text/css"
         href="{{ url_for('static', filename='styles/style.css') }}">
 {% endblock style %}
-<body class="container_fluid">
+
+<!-- Get the flash message -->
 {% block body %}
+  {% block flashmessage %}
+    {% with messages = get_flashed_messages() %}
+       {% if messages %}
+
+           {{ message }}
+
+       {% endif %}
+    {% endwith %}
+  {% endblock flashmessage %}
   <header>
 
     {% block header %}
@@ -72,7 +82,7 @@
               </li>
     <!--        { % else % }-->
               <li class="nav-item">
-                <a href="{{ url_for('upload_main_page') }}">Вход</a>
+                <a href="{{ url_for('login') }}">Вход</a>
               </li>
     <!--        { % endif % }-->
           </ul>
@@ -86,5 +96,5 @@
     </div>
   </main>
 {% endblock body %}
-</body>
+
 <!--</head>-->
