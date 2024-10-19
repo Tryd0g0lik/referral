@@ -1,4 +1,5 @@
 """Here a router of the flask app."""
+from datetime import datetime
 
 from cfgv import ValidationError
 from flask import (jsonify, redirect, render_template, request,  # jsonify,
@@ -7,7 +8,7 @@ from flask import (jsonify, redirect, render_template, request,  # jsonify,
 # from flask_jwt_extended import create_access_token
 from referral.flasker import app_, csrf
 from referral.forms.form_registration import GetFormRegistration
-from referral.models import Users, db, get_db_connection
+from .models import Users, Session
 
 
 def app_router():
@@ -44,8 +45,9 @@ def app_router():
     async def register():
         # Логика регистрации пользователя
         form = GetFormRegistration()
-        conn = get_db_connection()
+        
         error = "some_view"
+        sess = Session()
         if request.method == "POST" and form.validate_on_submit():
             try:
                 # Pass the form's email field
@@ -71,27 +73,29 @@ def app_router():
                 new_user = Users()
                 new_user.firstname=firstname
                 new_user.set_password(password)
+                password_hash = new_user.password_hash
 
-                conn.execute(
-                    Users.__table__.insert().values(
-                        firstname=new_user.firstname,
-                        email=normalized_email,
-                        password = new_user.password,
-                        is_activated=False,
-                        activate=False
-                    )
+                user = Users(
+                    firstname=new_user.firstname,
+                    email=normalized_email,
+                    password=password_hash,
+                    send=True,
+                    is_activated=False,
+                    activate=False,
                 )
                 
-                conn.session.commit()
-                return redirect(url_for("some_view"))
-            except ValidationError as e:
+                sess.add(user)
+                sess.commit()
+                error = "OK"
+                
+            except (Exception, ValidationError) as e:
                 # Lower is a roll back if received the error.
-                error = "some_view" + str(e)
-                conn.rollback()
+                error = "some_view: " + str(e)
+                sess.rollback()
                 
             finally:
-                conn.close()
-                print(f"ERRR: {error}")
+                sess.close()
+                print(f"MESSAGE: {error}")
                 return render_template("users/register.html",
                                        form=form,
                                        error=error)
