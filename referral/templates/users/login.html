@@ -36,7 +36,7 @@ current_users.is_authenticated == True %}
             {{ form.submit() }}
         </form>
       </div>
-      {% if message and message != None and message.length > 5 %}
+      {% if message and message != None %}
         <div class="form-message">{{ message }}</div>
       {% endif %}
     {% endif %}

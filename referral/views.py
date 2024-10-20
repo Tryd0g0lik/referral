@@ -235,12 +235,17 @@ def app_router():
                     activation_token=request.args.get("token")).first()
                 if user:
                     userlogin = UserLogin()
-                    userlogin.create(user).is_authenticated()
+                    userlogin.create(user)
+                    userlogin.is_authenticated_()
+                    userlogin.id = userlogin.get_id
+                    userlogin.token = userlogin.get_token
                     login_user(userlogin)
                     # Удаляем токен после активации
                     # user.activation_token = None
+                else:
+                    message = f"[login]: User invalid"
             except Exception as err:
-                message = f"[login]: Token is an invalid => {err.__str__()}"
+                message = f"[login]: Token invalid => {err.__str__()}"
             finally:
                 sess.commit()
                 sess.close()
@@ -332,12 +337,13 @@ def app_router():
     #     # Логика получения рефералов
     #     pass
     @login_manager.user_loader
-    def load_user(token: str):
-        userlogin = UserLogin().fromDB(token)
-        if not userlogin.id or userlogin.id < 0:
-            print("[load_user]: Token was not found")
-            return
-        # Логика загрузки пользователя из базы данных по user_id
-        return userlogin
+    def load_user(ind):
+       try:
+            userlogin = Users.query.get(int(ind))
+           
+            # Логика загрузки пользователя из базы данных по user_id
+            return userlogin
+       except Exception as err:
+           print("[load_user]: What was wrong.")
         
     return app_

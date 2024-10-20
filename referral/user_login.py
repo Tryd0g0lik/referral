@@ -8,31 +8,42 @@ class UserLogin:
     This a class make the present of single user after
     the event authorization.
     """
-   
-    def is_authenticated(self):
-        """Here is a property of Authenticate"""
-        self.is_authenticated = True
-        return self
-    
-    def is_active(self):
-        """Here is change an user's status. """
-        self.is_active = True
-        return self
-    
-    def is_anonymous(self):
-        self.is_anonymous = False
-        return self
-    
-    def get_id(self):
-        return str(self.__user['id'])
-    
+
+    def __init__(self):
+        self.is_authenticated = False
+        self.is_active = False
+        self.is_anonymous = True
+
     def create(self, user: object):
         """
         :param user: object
         :return: user's object from db
         """
         self.__user = user
-        return self
+        
+    
+    def is_authenticated_(self):
+        """Here is a property of Authenticate"""
+        self.is_authenticated = True
+        
+    
+    def is_active_(self):
+        """Here is change an user's status. """
+        self.is_active = True
+        
+    
+    def is_anonymous_(self):
+        self.is_anonymous = False
+        
+    
+    def get_id(self):
+        return self.__user['id']
+    def get_token(self):
+        return self.__user['activation_token']
+    
+    def get_firstname(self):
+        return self.__user['firstname']
+    
     
     
     def fromDB(self, user_activation_token: str):
