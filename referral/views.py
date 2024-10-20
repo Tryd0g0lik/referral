@@ -10,7 +10,7 @@ from flask_login import (LoginManager,
                          login_required,
                          logout_user, current_user)
 # from flask_jwt_extended import create_access_token
-from referral.flasker import app_, csrf
+from referral.flasker import app_, csrf, login_manager
 from referral.forms.form_registration import GetFormRegistration
 from .forms.form_login import GetFormAuthorization
 from .models import Users, Session
@@ -19,10 +19,11 @@ from itsdangerous import URLSafeTimedSerializer
 from flask import redirect, url_for, flash
 from .postman.sender import send_activation_email
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
+from .user_login import UserLogin
 
 s = URLSafeTimedSerializer(app_.secret_key)
-login_manager = LoginManager()
-login_manager.init_app(app_)
+# LOGIN SESSION
+
 def generate_token(email):
     return s.dumps(email, salt='email-confirm')
 def app_router():
@@ -128,7 +129,7 @@ def app_router():
                     password=password_hash,
                     send=True,
                     is_activated=False,
-                    activate=False,
+                    is_active=False,
                 )
                 
                 # sess.add(user)
@@ -171,8 +172,8 @@ def app_router():
                                title="Регистрация",
                                current_users=None,
                                message=None)
-        # response = render_template(render_template("users/register.html"))
-        # return render_template("users/register.html", form=form)
+        #
+        # @login_required
 
     @app_.route(
         "/login",
@@ -187,11 +188,12 @@ def app_router():
         sess = Session()
         
         user = None
-        if form_loginin.validate_on_submit():
-            email = form_loginin.email.data
-            password = form_loginin.password.data
-            user = sess.query(Users).filter_by(email=email).first()
+        message = None
         if request.method == "POST":
+            if form_loginin.validate_on_submit():
+                email = form_loginin.email.data
+                password = form_loginin.password.data
+                user = sess.query(Users).filter_by(email=email).first()
         
             
                 # Received user
@@ -209,12 +211,14 @@ def app_router():
                 """
                 if (user.email != email) and\
                   (password != Users.check_password(user.password)):
+                    message = "Invalid username or password"
                     return render_template(
                         "users/login.html",
                         title="Авторизация",
                         current_users=None,
                         form=form_loginin,
-                        message="Invalid username or password")
+                        message=message)
+
                 return render_template(
                     "users/login.html",
                     title="Авторизация",
@@ -222,15 +226,31 @@ def app_router():
                     form=form_loginin,
                     message="login successful!"
                     )
+
+        elif request.args.get("token") and\
+          len(request.args.get("token")) > 10:
+            
+            try:
+                user = sess.query(Users).filter_by(
+                    activation_token=request.args.get("token")).first()
+                if user:
+                    userlogin = UserLogin()
+                    userlogin.create(user).is_authenticated()
+                    login_user(userlogin)
+                    # Удаляем токен после активации
+                    # user.activation_token = None
+            except Exception as err:
+                message = f"[login]: Token is an invalid => {err.__str__()}"
+            finally:
+                sess.commit()
+                sess.close()
+            
         
-        if request.args.get('token') != None and\
-          len(request.args.get('token')) > 10 :
-            login_user(user)
         return render_template("users/login.html",
                                title="Авторизация",
                                current_users=current_user,
                                form=form_loginin,
-                               message=None,)
+                               message=message,)
 
     @app_.route(
         "/activate/<token>",
@@ -256,8 +276,7 @@ def app_router():
                   minutes=int(TOKEN_TIME_MINUTE_EXPIRE)
                   ):
                     
-                    # Удаляем токен после активации
-                    user.activation_token = None
+                    
                     # Удаляем время создания токена
                     user.token_created_at = None
                     # Активируем пользователя
@@ -281,14 +300,14 @@ def app_router():
                 )
             # Переадресация после успешной активации
             return redirect(
-                url_for('login')
+                url_for('login', token=token)
                 )
     
         except Exception as e:
             print(f"[activate]: Error => {e.__str__()}")
             flash('The activation link is invalid or has expired.', 'danger')
             return redirect(
-                url_for('login', token=token)
+                url_for('login')
                 )  # Переадресация на страницу входа
         finally:
             sess.commit()
@@ -313,8 +332,12 @@ def app_router():
     #     # Логика получения рефералов
     #     pass
     @login_manager.user_loader
-    def load_user(user_id):
+    def load_user(token: str):
+        userlogin = UserLogin().fromDB(token)
+        if not userlogin.id or userlogin.id < 0:
+            print("[load_user]: Token was not found")
+            return
         # Логика загрузки пользователя из базы данных по user_id
-        return Users.get(user_id)
+        return userlogin
         
     return app_

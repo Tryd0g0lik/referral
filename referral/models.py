@@ -39,7 +39,7 @@ class Users(Base):
     password = sq.Column("password", sq.String(150), nullable=False)
     send = sq.Column("sender",sq.Boolean() )
     is_activated = sq.Column("is_activated", sq.Boolean())
-    activate = sq.Column("activate", sq.Boolean())
+    is_active = sq.Column("is_active", sq.Boolean())
     date = sq.Column(sq.DateTime, default=datetime.utcnow)
     activation_token = sq.Column(sq.String(255), nullable=True)
     token_created_at = sq.Column(sq.DateTime, nullable=True)

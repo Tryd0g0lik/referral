@@ -7,6 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
+from flask_login import LoginManager
 
 from dotenv_ import (PROJECT_REFERRAL_SECRET_KEY,
                      PROJECT_REFERRAL_SETTING_POSTGRES_DB,
@@ -69,12 +70,19 @@ def create_flask():
     app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER
     mail = Mail(app)
     
-    return {"app": app, "mail": mail, "csrf": csrf, "bcrypt": bcrypt}
+    # LOGIN SESSION
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    return {"app": app,
+            "mail": mail,
+            "csrf": csrf,
+            "bcrypt": bcrypt,
+            "login_manager": login_manager}
 
 flask_dict = create_flask()
 app_ = flask_dict["app"]
 csrf = flask_dict["csrf"]
 bcrypt = flask_dict["bcrypt"]
 mail = flask_dict["mail"]
-
+login_manager = flask_dict["login_manager"]
 
