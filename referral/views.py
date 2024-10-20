@@ -19,7 +19,7 @@ from itsdangerous import URLSafeTimedSerializer
 from flask import redirect, url_for, flash
 from .postman.sender import send_activation_email
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
-token_time_activate = set()
+
 s = URLSafeTimedSerializer(app_.secret_key)
 login_manager = LoginManager()
 login_manager.init_app(app_)
@@ -78,6 +78,8 @@ def app_router():
             pass
         return render_template(
             "index.html",
+            current_users=None,
+            message=None
         )
 
     @app_.route(
@@ -103,14 +105,16 @@ def app_router():
                     return render_template(
                         "users/register.html",
                         form=form,
-                        error="Password cannot be empty.",
+                        message="Password cannot be empty.",
+                        current_users=None,
                     )
 
                 if password != password2:
                     return render_template(
                         "users/register.html",
                         form=form,
-                        error="Passwords do not match.",
+                        current_users=None,
+                        message="Passwords do not match.",
                     )
                 
                 new_user = Users()
@@ -132,7 +136,7 @@ def app_router():
                 # error = "OK"
                 # AUTHENTICATION FROM THE EMAIL
                 token = generate_token(normalized_email)
-                if normalized_email not in token_time_activate:
+                if normalized_email:
                     user.activation_token = token
                     user.token_created_at = datetime.utcnow()
                     send_activation_email(normalized_email, token)
@@ -152,14 +156,21 @@ def app_router():
                 print(f"MESSAGE: {error}")
                 return render_template("users/register.html",
                                        form=form,
-                                       error=error, title="Регистрация")
+                                       error=error, title="Регистрация",
+                                       current_users=None,
+                                       message=None)
                 
         elif not form.validate_on_submit():
             return render_template("users/register.html", form=form,
-                                   title="Регистрация")
+                                   title="Регистрация",
+                                   current_users=None,
+                                   message=None
+                                   )
         
         return render_template("users/register.html", form=form,
-                               title="Регистрация")
+                               title="Регистрация",
+                               current_users=None,
+                               message=None)
         # response = render_template(render_template("users/register.html"))
         # return render_template("users/register.html", form=form)
 
@@ -167,31 +178,59 @@ def app_router():
         "/login",
         methods=[
             "GET",
-            "POST",
+            "POST"
         ],
     )
     async def login():
         # Логика аутентификации пользователя
         form_loginin = GetFormAuthorization()  # Создаем экземпляр формы
+        sess = Session()
+        
+        user = None
+        if form_loginin.validate_on_submit():
+            email = form_loginin.email.data
+            password = form_loginin.password.data
+            user = sess.query(Users).filter_by(email=email).first()
         if request.method == "POST":
         
-            if form_loginin.validate_on_submit():
-                email = form_loginin.email.data
-                password = form_loginin.password.data
-            # firstname = request.form["firstname"]
-            # password = request.form["password"]
-            # user = Users.query.filter_by(firstname=firstname).first()
-            # # Сравниваем хеши
-            # if user and Users.check_password(password):
-            #     return "login successful!"
-            # else:
-            #     return "Invalid username or password"
-    
-    
+            
+                # Received user
+                
+                user.set_password(password)
+                """
+                    На каком этапе лучше создавать хеш-пароль???
+                    Хешировать email или нет???
+                """
+                
+                # Compare the email and password
+                """
+                    Сравнение проводить лучше в состоянии хеша или
+                    декодировать пароль, затем сравнивать???
+                """
+                if (user.email != email) and\
+                  (password != Users.check_password(user.password)):
+                    return render_template(
+                        "users/login.html",
+                        title="Авторизация",
+                        current_users=None,
+                        form=form_loginin,
+                        message="Invalid username or password")
+                return render_template(
+                    "users/login.html",
+                    title="Авторизация",
+                    current_users=None,
+                    form=form_loginin,
+                    message="login successful!"
+                    )
+        
+        if request.args.get('token') != None and\
+          len(request.args.get('token')) > 10 :
+            login_user(user)
         return render_template("users/login.html",
                                title="Авторизация",
                                current_users=current_user,
-                               form=form_loginin)
+                               form=form_loginin,
+                               message=None,)
 
     @app_.route(
         "/activate/<token>",
@@ -227,6 +266,7 @@ def app_router():
                         'Your account has been activated! You can now log in.',
                         'success'
                         )
+                   
                 else:
                     flash('Invalid activation token.', 'danger')
                     # Переадресация на страницу входа
@@ -248,7 +288,7 @@ def app_router():
             print(f"[activate]: Error => {e.__str__()}")
             flash('The activation link is invalid or has expired.', 'danger')
             return redirect(
-                url_for('login')
+                url_for('login', token=token)
                 )  # Переадресация на страницу входа
         finally:
             sess.commit()

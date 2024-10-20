@@ -64,6 +64,10 @@
         {{ form.submit() }}
     </form>
   </div>
+  {% if message and message != None and message.length > 5 %}
+    <div class="form-message">{{ message }}</div>
+  {% endif %}
+
 {% endblock mainRowContribute %}
 
 

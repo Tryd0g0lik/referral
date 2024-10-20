@@ -29,5 +29,3 @@ class GetFormAuthorization(FlaskForm):
         "LoginIn",
         render_kw={"class": "btn btn-secondary"}
     )
-    
-    
