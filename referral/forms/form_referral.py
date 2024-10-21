@@ -28,4 +28,4 @@ class GetFormReferralCode(FlaskForm):
             ),
         ],
     )
-    submit = SubmitField("Make", render_rw={"class": "btn btn-secondary"})
+    submit = SubmitField("Make", render_kw={"class": "btn btn-secondary"})

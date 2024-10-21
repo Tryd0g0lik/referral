@@ -60,7 +60,7 @@ class UserLogin:
         """
         try:
             sess = Session()
-            self.__user = sess.query(Users).filter_by(pk=int(user_id)).first()
+            self.__user = sess.query(Users).filter_by(id=int(user_id)).first()
             sess.close()
             if self.__user == None:
                 """If we have a problem to the user's search then
