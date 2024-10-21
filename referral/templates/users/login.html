@@ -5,13 +5,21 @@ current_user.is_authenticated() == True %}
   {% block title %}Вход в профиль{% endblock title %}
 {% endif %}
 {% block header %}
-  This is page of user {{ current_user._UserLogin__user.firstname| title }}
+  {% if current_user and current_user._UserLogin__user and
+current_user._UserLogin__user.firstname %}
+    This is page of user {{ current_user._UserLogin__user.firstname| title }}
+  {% else %}
+    Hallo World
+  {% endif %}
 {% endblock header %}
 {% block mainRowContribute %}
 
     {% if current_user and current_user.is_authenticated and
 current_user.is_authenticated() == True %}
-      <h2>Здравствуйте, {{ current_user._UserLogin__user.firstname }}!</h2>
+       {% if current_user and current_user._UserLogin__user and
+current_user._UserLogin__user.firstname %}
+          <h2>Здравствуйте, {{ current_user._UserLogin__user.firstname }}!</h2>
+        {% endif %}
     {% else %}
       <h2>Вход</h2>
       <div class="form">

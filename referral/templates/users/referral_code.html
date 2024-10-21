@@ -3,11 +3,19 @@
 {% if  current_user and current_user.is_authenticated and
 current_user.is_authenticated() == True %}
   {% block title %}
-    {{ current_user._UserLogin__user.firstname }} - referral code
+    {% if current_user and current_user._UserLogin__user and
+current_user._UserLogin__user.firstname %}
+      {{ current_user._UserLogin__user.firstname }} - referral code
+    {% else %}
+      Referral code
+    {% endif %}
   {% endblock title %}
 {% endif %}
 {% block header %}
-  Referral code from the {{ current_user._UserLogin__user.firstname| title }}
+  {% if current_user and current_user._UserLogin__user and
+current_user._UserLogin__user.firstname %}
+    Referral code from the {{ current_user._UserLogin__user.firstname| title }}
+  {% endif %}
 {% endblock header %}
 {% block mainRowContribute %}
 

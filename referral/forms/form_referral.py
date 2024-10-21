@@ -6,6 +6,13 @@ from wtforms import (
 )
 
 class GetFormReferralCode(FlaskForm):
+    """
+    This is a form under dashbord of profile's page.
+    It's "Создать referral code".
+    :param 'email': str. User's email is addressee.
+    :param 'description' This a description into the range of 0 to 150 symbol.
+    It's a marker for a referral-code.
+    """
     email = StringField(
         "email",
         validators=[

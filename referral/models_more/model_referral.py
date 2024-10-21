@@ -2,6 +2,8 @@ from datetime import datetime
 import sqlalchemy as sq
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship
+from wtforms import StringField
+
 from referral.flasker import bcrypt
 from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_DB,
                      PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
@@ -26,6 +28,7 @@ class Referrals(Base):
         backref="referral",
         cascade="all, delete-orphan",
         )
+    description = sq.Column("description", sq.String(150), nullable=False)
     referral_code = sq.Column(
         "referral_code",
         sq.String(150),
@@ -40,7 +43,7 @@ class Referrals(Base):
         self.user_id = user['id']
         self.referral_code = generate_unique_referral_code()
     def __str__(self):
-        return f"User ID: {self.id}, User email: {self.email}"
+        return f"User email: {self.email} Description: "
 
    
    

@@ -22,7 +22,7 @@
   <!--   { { block.super() } }-->
   <div class="form">
     <p>Custom content added to the login form.</p>
-    <form id="register" method="post">
+    <form id="register" method="POST">
        {{ form.csrf_token }} <!-- CSRF защита -->
        <div class="form-group">
           {{ form.firstname.label(class="form-check-label") }}
