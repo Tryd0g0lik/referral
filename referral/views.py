@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 
 
-from flask import (render_template, request, session, )
+from flask import (render_template, request, )
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from referral.flasker import app_, login_manager
 
@@ -18,7 +18,9 @@ def app_router():
 
     """Total function"""
     views_accouts(app_)
+    
     views_profiles(app_)
+    
     def delete_old_users():
         """Here  all tokens we delete where token time was expired"""
         sess = Session()
@@ -27,7 +29,8 @@ def app_router():
                 minutes=int(TOKEN_TIME_MINUTE_EXPIRE)
             )
             old_users = (
-                sess.query(Users).filter(Users.token_created_at < threshold_time).all()
+                sess.query(Users)
+                    .filter(Users.token_created_at < threshold_time).all()
             )
 
             if len(old_users) > 0:
@@ -70,7 +73,6 @@ def app_router():
             # params = request.form.to_dist()
             pass
         return render_template("index.html", message=None)
-    
     
     return app_
 
