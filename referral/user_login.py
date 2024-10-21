@@ -8,15 +8,15 @@ class UserLogin:
     This a class make the present of single user after
     the event authorization.
     """
-    def __init__(self, user):
-        # self.__user = None
-        self.__user = user.__dict__
+    def __init__(self):
+        self.__user = None
+        # self.__user = user.__dict__
     def create(self, user):
         """
         :param user: object
         :return: user's object from db
         """
-        self.__user = user
+        self.__user = user.__dict__
         return self
     
     def is_authenticated(self):

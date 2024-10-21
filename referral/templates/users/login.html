@@ -9,10 +9,10 @@ current_user.is_authenticated == True %}
 
 {% block mainRowContribute %}
 
-  is_authenticated: {{current_user.is_authenticated}}
-  is_anonymous: {{current_user.is_anonymous}}
-  is_active: {{current_user.is_active}}
-  firstname: {{current_user.id}}
+  is_authenticated: {{current_user.is_authenticated() }}
+  is_anonymous: {{current_user.is_anonymous()}}
+  is_active: {{current_user.is_active()}}
+
     {% if current_user.is_authenticated and
 current_user.is_authenticated == True %}
       <h2>Здравствуйте, {{ current_user }}!</h2>

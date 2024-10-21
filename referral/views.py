@@ -179,7 +179,7 @@ def app_router():
         methods=[
             "GET",
         ],
-    ) # @login_required
+    )
     @login_required
     async def dashboard():
         message = "Dashboard"
@@ -225,14 +225,11 @@ def app_router():
                   (user.check_password(password)):
                     # Make data to the dashboard page
                     # LOGIN SESSION
-                    userlogin = UserLogin(user)
-                    # user_obj = userlogin.create(user)
+                    userlogin = UserLogin()
+                    userlogin.create(user)
                     userlogin.is_authenticated()
                     userlogin.is_anonymous()
-                    ind =  userlogin.get_id()
-                    # userlogin.id = user.id
-                    # userlogin.is_active()
-                    # userlogin.firstname = user.firstname
+                    userlogin.get_id()
                     login_user(userlogin)
                     # Change data from the single user of db
                     user.is_active = True
@@ -242,11 +239,6 @@ def app_router():
                     return redirect(url_for("dashboard",
                                             title="Profile",
                                             message=message))
-                    # return render_template(
-                    #     "users/login.html",
-                    #     title="Авторизация",
-                    #     form=form_loginin,
-                    #     message=message)
                 sess.close()
                 return render_template(
                     "users/login.html",
@@ -348,10 +340,12 @@ def app_router():
 @login_manager.user_loader
 def load_user(user_id):
     from .models import Users, Session
+    from .user_login import UserLogin
     sess = Session()
-    # userlogin = sess.query(Users).get(id=int(user_id))
-    userlogin = sess.query(Users).filter_by(id=int(user_id)).first()
-    # userlogin = Users.query.filter_by.filter_by(id=int(ind))
+    user = sess.query(Users).filter_by(id=int(user_id)).first()
+    userlogin = UserLogin()
+    userlogin.create(user)
+    userlogin.fromDB(userlogin.get_id())
     sess.close()
     # Логика загрузки пользователя из базы данных по user_id
     return userlogin
