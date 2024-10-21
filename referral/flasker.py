@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask,session
+from flask import Flask, session
 from flask_bcrypt import Bcrypt
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
@@ -29,7 +29,6 @@ def create_flask():
     app.config.from_object(__name__)
     # jwt = JWTManager(app)
     csrf = CSRFProtect(app)
-
 
     # app.config.update(
     #     dict(
@@ -66,8 +65,12 @@ def create_flask():
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = "login"
+    
+    # clear session
+    # @app_.before_request
+    # def clear_session():
+    #     session.clear()
 
-  
     return {
         "app": app,
         "mail": mail,
@@ -83,5 +86,3 @@ csrf = flask_dict["csrf"]
 bcrypt = flask_dict["bcrypt"]
 mail = flask_dict["mail"]
 login_manager = flask_dict["login_manager"]
-
-

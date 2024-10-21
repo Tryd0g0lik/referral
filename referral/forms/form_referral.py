@@ -1,9 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import (
-    StringField,
-    SubmitField,
-    validators
-)
+from wtforms import StringField, SubmitField, validators
+
 
 class GetFormReferralCode(FlaskForm):
     """
@@ -13,14 +10,14 @@ class GetFormReferralCode(FlaskForm):
     :param 'description' This a description into the range of 0 to 150 symbol.
     It's a marker for a referral-code.
     """
+
     email = StringField(
         "email",
         validators=[
             validators.InputRequired(),
             validators.Email(),
-            validators.DataRequired()
+            validators.DataRequired(),
         ],
-        
     )
     description = StringField(
         "Описание",

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import (StringField, SubmitField, validators)
+from wtforms import StringField, SubmitField, validators
 
 from referral.forms.form_registration import GetFormRegistration
 
@@ -11,6 +11,7 @@ class GetFormAuthorization(FlaskForm):
     :param 'email': str. User's email for profile's activation.
     :param 'password': str. User's password for profile's activation.
     """
+
     email = StringField(
         "email",
         validators=[

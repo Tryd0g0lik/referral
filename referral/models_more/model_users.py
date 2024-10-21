@@ -33,5 +33,3 @@ class Users(Base):
     def check_password(self, password: str):
         """Passwords checking"""
         return bcrypt.check_password_hash(self.password, password)
-
-

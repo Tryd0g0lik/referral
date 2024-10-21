@@ -1,7 +1,10 @@
 """Here a token generater """
-from typing import Dict, Callable
+
 import uuid
+from typing import Callable, Dict
+
 import bcrypt
+
 tokens = set()
 
 
@@ -16,12 +19,10 @@ def generate_unique_token() -> str:
             tokens.add(new_token)
             return new_token
 
+
 def generate_unique_referral_code(func: Callable[[], str]) -> str:
-   code = generate_unique_token()
-   
-   # HASH
-   hashed_code = bcrypt.hashpw(
-       code.encode('utf-8'),
-       bcrypt.gensalt()
-   )
-   return hashed_code.decode('utf-8')
+    code = generate_unique_token()
+
+    # HASH
+    hashed_code = bcrypt.hashpw(code.encode("utf-8"), bcrypt.gensalt())
+    return hashed_code.decode("utf-8")
