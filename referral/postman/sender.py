@@ -1,6 +1,8 @@
 from flask_mail import Message
+
+from dotenv_ import PROJECT_REFERRAL_SETTING_POSTGRES_HOST
 from referral.flasker import mail
-from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_HOST)
+
 
 def send_activation_email(user_email, token):
     activation_link = f"http://{PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:5000/activate/{token}"  # Замените на ваш домен

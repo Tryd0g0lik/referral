@@ -1,4 +1,6 @@
-"""Flask form for page registration """
+"""
+Flask form for page registration
+"""
 
 from cfgv import ValidationError
 from email_validator import EmailNotValidError, validate_email
