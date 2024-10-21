@@ -1,5 +1,5 @@
 # This is a sample Python script.
-# from referral.models import create_table, engine
+# from referral.models_more import create_table, engine
 from referral.views import app_router
 
 # Press the green button in the gutter to run the script.

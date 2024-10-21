@@ -13,7 +13,9 @@ from referral.flasker import app_, csrf, login_manager
 from referral.forms.form_registration import GetFormRegistration
 
 from .forms.form_login import GetFormAuthorization
-from .models import Session, Users
+from .models import Session
+from .models_more.model_users import Users
+
 from .postman.sender import send_activation_email
 from .user_login import UserLogin
 

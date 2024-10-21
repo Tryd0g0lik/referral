@@ -4,7 +4,8 @@ This is a description of user_login.
 
 from typing import Union
 
-from referral.models import Session, Users
+from referral.models import Session
+from referral.models_more.model_users import Users
 
 session = Session()
 
@@ -16,8 +17,6 @@ class UserLogin:
     for  a LoginManager work
     """
 
-    # def __init__(self):
-    # self.__user = user.__dict__
     def create(self, user):
         """
         :param user: object
