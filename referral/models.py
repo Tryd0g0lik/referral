@@ -1,6 +1,7 @@
 """Here is a connection with a db of PostgreSQL"""
 from datetime import datetime, timedelta
 import sqlalchemy as sq
+from flask_login import UserMixin
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_DB,
@@ -62,7 +63,7 @@ class Users(Base):
 
 def create_tables(engines):
     try:
-        Base.metadata.drop_all(engines)
+        # Base.metadata.drop_all(engines)
         print(f"[create_table]: Drop All")
         
         Base.metadata.create_all(engines)

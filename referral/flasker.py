@@ -73,6 +73,7 @@ def create_flask():
     # LOGIN SESSION
     login_manager = LoginManager()
     login_manager.init_app(app)
+    login_manager.login_view = 'login'
     return {"app": app,
             "mail": mail,
             "csrf": csrf,
@@ -85,4 +86,5 @@ csrf = flask_dict["csrf"]
 bcrypt = flask_dict["bcrypt"]
 mail = flask_dict["mail"]
 login_manager = flask_dict["login_manager"]
+
 

@@ -9,7 +9,6 @@ from flask_login import (LoginManager,
                          login_user,
                          login_required,
                          logout_user, current_user)
-# from flask_jwt_extended import create_access_token
 from referral.flasker import app_, csrf, login_manager
 from referral.forms.form_registration import GetFormRegistration
 from .forms.form_login import GetFormAuthorization
@@ -22,7 +21,6 @@ from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from .user_login import UserLogin
 
 s = URLSafeTimedSerializer(app_.secret_key)
-# LOGIN SESSION
 
 def generate_token(email):
     return s.dumps(email, salt='email-confirm')
@@ -79,7 +77,7 @@ def app_router():
             pass
         return render_template(
             "index.html",
-            current_users=None,
+            current_user=None,
             message=None
         )
 
@@ -107,14 +105,14 @@ def app_router():
                         "users/register.html",
                         form=form,
                         message="Password cannot be empty.",
-                        current_users=None,
+                        current_user=None,
                     )
 
                 if password != password2:
                     return render_template(
                         "users/register.html",
                         form=form,
-                        current_users=None,
+                        current_user=None,
                         message="Passwords do not match.",
                     )
                 
@@ -158,22 +156,40 @@ def app_router():
                 return render_template("users/register.html",
                                        form=form,
                                        error=error, title="Регистрация",
-                                       current_users=None,
+                                       current_user=None,
                                        message=None)
                 
         elif not form.validate_on_submit():
             return render_template("users/register.html", form=form,
                                    title="Регистрация",
-                                   current_users=None,
+                                   current_user=None,
                                    message=None
                                    )
         
         return render_template("users/register.html", form=form,
                                title="Регистрация",
-                               current_users=None,
+                               current_user=None,
                                message=None)
         #
         # @login_required
+
+    
+    @app_.route(
+        "/dashboard",
+        methods=[
+            "GET",
+        ],
+    ) # @login_required
+    @login_required
+    async def dashboard():
+        message = "Dashboard"
+        form_loginin = GetFormAuthorization()
+        
+        return render_template(
+                        "users/profile.html",
+                        title="Dashboard",
+                        message=message)
+    
 
     @app_.route(
         "/login",
@@ -195,10 +211,6 @@ def app_router():
                 password = form_loginin.password.data
                 user = sess.query(Users).filter_by(email=email).first()
         
-            
-                # Received user
-                
-                user.set_password(password)
                 """
                     На каком этапе лучше создавать хеш-пароль???
                     Хешировать email или нет???
@@ -209,37 +221,50 @@ def app_router():
                     Сравнение проводить лучше в состоянии хеша или
                     декодировать пароль, затем сравнивать???
                 """
-                if (user.email != email) and\
-                  (password != Users.check_password(user.password)):
+                if (user.email == email) and\
+                  (user.check_password(password)):
+                    # Make data to the dashboard page
+                    # LOGIN SESSION
+                    userlogin = UserLogin(user)
+                    # user_obj = userlogin.create(user)
+                    userlogin.is_authenticated()
+                    userlogin.is_anonymous()
+                    ind =  userlogin.get_id()
+                    # userlogin.id = user.id
+                    # userlogin.is_active()
+                    # userlogin.firstname = user.firstname
+                    login_user(userlogin)
+                    # Change data from the single user of db
+                    user.is_active = True
+                    sess.commit()
+                    sess.close()
                     message = "Invalid username or password"
-                    return render_template(
-                        "users/login.html",
-                        title="Авторизация",
-                        current_users=None,
-                        form=form_loginin,
-                        message=message)
-
+                    return redirect(url_for("dashboard",
+                                            title="Profile",
+                                            message=message))
+                    # return render_template(
+                    #     "users/login.html",
+                    #     title="Авторизация",
+                    #     form=form_loginin,
+                    #     message=message)
+                sess.close()
                 return render_template(
                     "users/login.html",
                     title="Авторизация",
-                    current_users=None,
                     form=form_loginin,
                     message="login successful!"
                     )
 
-        elif request.args.get("token") and\
-          len(request.args.get("token")) > 10:
-            
+        # elif request.args.get("token") and\
+        #   len(request.args.get("token")) > 10:
+        else:
             try:
                 user = sess.query(Users).filter_by(
-                    activation_token=request.args.get("token")).first()
+                    activation_token="Indvcms4MEBtYWlsLnJ1Ig.ZxSnRg.suf7mNxyhE0R87GJmMT0zT0eLeY").first()
+                    # activation_token=request.args.get("token")).first()
                 if user:
-                    userlogin = UserLogin()
-                    userlogin.create(user)
-                    userlogin.is_authenticated_()
-                    userlogin.id = userlogin.get_id
-                    userlogin.token = userlogin.get_token
-                    login_user(userlogin)
+     
+                    login_user(user)
                     # Удаляем токен после активации
                     # user.activation_token = None
                 else:
@@ -253,7 +278,6 @@ def app_router():
         
         return render_template("users/login.html",
                                title="Авторизация",
-                               current_users=current_user,
                                form=form_loginin,
                                message=message,)
 
@@ -317,33 +341,18 @@ def app_router():
         finally:
             sess.commit()
             sess.close()
-    # Логика аутентификации пользователя
-    # username = await request.json.get("username")
-    # email = await request.json.get("email")
-    # Проверка пользователя и создание токена
-    # access_token = create_access_token(identity=username)
-
-    # return jsonify(access_token=access_token)
-
-    # @app_.route("/referal_code", methods=["POST"])
-    # @jwt_required()
-    # async def create_referral_code():
-    #     # Логика создания реферального кода
-    #     pass
-    #
-    # @app_.route("/referrals/<referrer_id>", methods=["GET"])
-    # @jwt_required()
-    # async def get_referrals(referral_id):
-    #     # Логика получения рефералов
-    #     pass
-    @login_manager.user_loader
-    def load_user(ind):
-       try:
-            userlogin = Users.query.get(int(ind))
-           
-            # Логика загрузки пользователя из базы данных по user_id
-            return userlogin
-       except Exception as err:
-           print("[load_user]: What was wrong.")
-        
+  
     return app_
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    from .models import Users, Session
+    sess = Session()
+    # userlogin = sess.query(Users).get(id=int(user_id))
+    userlogin = sess.query(Users).filter_by(id=int(user_id)).first()
+    # userlogin = Users.query.filter_by.filter_by(id=int(ind))
+    sess.close()
+    # Логика загрузки пользователя из базы данных по user_id
+    return userlogin
+

@@ -8,50 +8,53 @@ class UserLogin:
     This a class make the present of single user after
     the event authorization.
     """
-
-    def __init__(self):
-        self.is_authenticated = False
-        self.is_active = False
-        self.is_anonymous = True
-
-    def create(self, user: object):
+    def __init__(self, user):
+        # self.__user = None
+        self.__user = user.__dict__
+    def create(self, user):
         """
         :param user: object
         :return: user's object from db
         """
         self.__user = user
-        
+        return self
     
-    def is_authenticated_(self):
+    def is_authenticated(self):
         """Here is a property of Authenticate"""
-        self.is_authenticated = True
-        
+        # self.is_authenticated = True
+        return True
     
-    def is_active_(self):
+    def is_active(self):
         """Here is change an user's status. """
-        self.is_active = True
-        
+        # self.is_active = True
+        return True
     
-    def is_anonymous_(self):
-        self.is_anonymous = False
-        
+    def is_anonymous(self):
+        # self.is_anonymous = False
+        return False
     
     def get_id(self):
-        return self.__user['id']
+        # return str(self.__user.pk)
+        # ind = str(self.__user["id"])
+        ind = self.__user["id"]
+        return ind
     def get_token(self):
-        return self.__user['activation_token']
+        return self.__user["activation_token"]
     
     def get_firstname(self):
         return self.__user['firstname']
     
     
     
-    def fromDB(self, user_activation_token: str):
+    def fromDB(self, user_id: str):
         try:
-            self.__user = session.query(Users)\
-                .filter_by(
-                activation_token=user_activation_token
+            # users = Users()
+            # self.__user = users.query\
+            sess = Session()
+            self.__user = sess.query(Users).filter_by(
+                pk=int(user_id)
             ).first()
+            sess.close()
             if self.__user == None:
                 """If we have a problem to the user's search then
                 the user.id to install int('-1')
@@ -63,7 +66,8 @@ class UserLogin:
             print(f"[UserLogin => fromDB]: Error => {err.__str__()}")
         finally:
             session.close()
-            return self
+            user = self.__user
+            return user
     
     
         

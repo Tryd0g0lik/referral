@@ -28,10 +28,11 @@
     {% endwith %}
   {% endblock flashmessage %}
   <header>
-
-    {% block header %}
-      <h1 class="display-1 text-center">It's your the Account </h1>
-    {% endblock header %}
+    <h1 class="display-1 text-center">
+      {% block header %}
+        It's your the Account
+      {% endblock header %}
+    </h1>
     {% block content %}
      <h2>O caйте</h2>
     {% endblock content %}
@@ -53,7 +54,7 @@
               <a href="{{ url_for('register') }}"
                  class="nav-link" >Регистрация</a>
             </li>
-              {% if current_users.is_authenticated %}
+              {% if current_user.is_authenticated %}
                 <li class="nav-item dropdown">
                   <li class="nav-item">
                     <a href="{{ url_for('upload_main_page') }}" class="nav-link
