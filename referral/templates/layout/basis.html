@@ -1,7 +1,11 @@
 {% extends "bootstrap/base.html" %}
 <!-- https://pythonhosted.org/Flask-Bootstrap/basic-usage.html#available-blocks -->
 
-
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='styles/style.css')}}">
+{% endblock %}
 
 
 
@@ -50,41 +54,40 @@
                 Главная
               </a>
             </li>
-            <li class="nav-item">
-              <a href="{{ url_for('register') }}"
-                 class="nav-link" >Регистрация</a>
-            </li>
-              {% if current_user.is_authenticated %}
+
+              {% if current_user and current_user.is_authenticated and
+            current_user.is_authenticated() %}
                 <li class="nav-item dropdown">
                   <li class="nav-item">
-                    <a href="{{ url_for('upload_main_page') }}" class="nav-link
+                    <a href="{{ url_for('profiles') }}" class="nav-link
                     dropdown-toggle" tada-togle="dropdown" role="button"
                        aria-haspopup="true" aria-expanded="false">
                       Профиль
                     </a>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
-                        Мои объявления
+                      <a class="dropdown-item"
+                         href="{{ url_for('referral_create') }}">
+                        Добавить код
                       </a>
-                      <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
-                        Изменить личные данные
+                      <a class="dropdown-item"
+                         href="{{ url_for('referral_change') }}">
+                        Изменить код
                       </a>
-                      <a href="{{ url_for('upload_main_page') }}" class="dropdown-item">
-                        Изменить пароль
-                      </a>
-                      <a href="{{ url_for('upload_main_page') }}" class="dropdown-item">
-                        Удалить
-                      </a>
-                      <a class="dropdown-item" href="{{ url_for('upload_main_page') }}">
-                        Выход
+                      <a class="dropdown-item"
+                         href="{{ url_for('referral_delete') }}">
+                        Удалить пароль
                       </a>
                     </div>
                   </li>
                 </li>
               {% else %}
-                <li class="nav-item">
-                  <a href="{{ url_for('login') }}">Вход</a>
-                </li>
+              <li class="nav-item">
+                <a href="{{ url_for('register') }}"
+                   class="nav-link" >Регистрация</a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ url_for('login') }}">Вход</a>
+              </li>
               {% endif %}
           </ul>
 

@@ -72,8 +72,9 @@ def app_router():
             # Преобразование данных формы в словарь
             # params = request.form.to_dist()
             pass
-        return render_template("index.html", current_user=None, message=None)
-
+        return render_template("index.html", message=None)
+    
+    # USER ACCOUNT
     @app_.route(
         "/register",
         methods=["GET", "POST"],
@@ -103,14 +104,13 @@ def app_router():
                         "users/register.html",
                         form=form,
                         message="Password cannot be empty.",
-                        current_user=None,
+                       
                     )
 
                 if password != password2:
                     return render_template(
                         "users/register.html",
                         form=form,
-                        current_user=None,
                         message="Passwords do not match.",
                     )
 
@@ -153,7 +153,6 @@ def app_router():
                     form=form,
                     error=error,
                     title="Регистрация",
-                    current_user=None,
                     message=None,
                 )
 
@@ -162,7 +161,6 @@ def app_router():
                 "users/register.html",
                 form=form,
                 title="Регистрация",
-                current_user=None,
                 message=None,
             )
 
@@ -170,23 +168,8 @@ def app_router():
             "users/register.html",
             form=form,
             title="Регистрация",
-            current_user=None,
             message=None,
         )
-
-    @app_.route(
-        "/dashboard",
-        methods=[
-            "GET",
-        ],
-    )
-    @login_required
-    async def dashboard():
-        """Opening a page for the user authorized"""
-        message = "Dashboard"
-        GetFormAuthorization()
-
-        return render_template("users/profile.html", title="Dashboard", message=message)
 
     @app_.route(
         "/login",
@@ -218,7 +201,7 @@ def app_router():
                     декодировать пароль, затем сравнивать???
                 """
                 if (user.email == email) and (user.check_password(password)):
-                    # Make data to the dashboard page
+                    # Make data to the profiles page
                     userlogin = UserLogin()
                     userlogin.create(user)
                     userlogin.is_authenticated()
@@ -232,7 +215,7 @@ def app_router():
                     sess.close()
                     message = "Invalid username or password"
                     return redirect(
-                        url_for("dashboard", title="Profile", message=message)
+                        url_for("profiles", title="Profile", message=message)
                     )
                 sess.close()
                 return render_template(
@@ -315,7 +298,64 @@ def app_router():
         finally:
             sess.commit()
             sess.close()
+    
+    # PROFILE
+    @app_.route(
+        "/profile",
+        methods=[
+            "GET",
+        ],
+    )
+    @login_required
+    async def profiles():
+        """Opening a page for the user authorized
+        This present a list of referral-code"""
+        message = "Profile"
+        GetFormAuthorization()
 
+        return render_template("users/profile.html", title="Dashboard", message=message)
+
+    
+    @app_.route(
+        "/profile/add",
+        methods=[
+            "GET",
+            "POST"
+        ]
+    )
+    @login_required
+    async def referral_create():
+        """This present a list of referral-code"""
+        message = "OK"
+        return render_template(
+            "users/referral_code.html",
+            title="Создать referral code",
+            form=None,
+            message=message,
+        )
+    
+    @app_.route(
+        "/profile/delete",
+        methods=[
+            "GET", "POST"
+        ]
+    )
+    @login_required
+    async def referral_delete():
+        """This present a list of referral-code"""
+        pass
+    
+    @app_.route(
+        "/profile/delete",
+        methods=[
+            "GET", "POST"
+        ]
+    )
+    @login_required
+    async def referral_change():
+        """This present a list of referral-code"""
+        pass
+    
     return app_
 
 

@@ -60,7 +60,7 @@ class Users(Base):
 def create_tables(engines):
     try:
 
-        Base.metadata.drop_all(engines)
+        # Base.metadata.drop_all(engines)
         print(f"[create_table]: Drop All")
 
         Base.metadata.create_all(engines)
