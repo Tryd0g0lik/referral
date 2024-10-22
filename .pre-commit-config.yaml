@@ -7,20 +7,20 @@ repos:
       - id: end-of-file-fixer
         language_version: "3.9"
       - id: check-yaml
-        exclude: ^venv/
+        exclude: ^venv/, */frontend
   - repo: https://github.com/PyCQA/flake8
     # https://flake8.pycqa.org/en/latest/user/error-codes.html
     rev: 7.1.1
     hooks:
       - id: flake8
-        exclude: ^venv/
+        exclude: ^venv/, */frontend
   - repo: https://github.com/psf/black
     # https://black.readthedocs.io/en/stable/
     rev: 24.8.0  # Укажите последнюю версию
     hooks:
       - id: black
         files: \.py$
-        exclude: ^venv/
+        exclude: ^venv/, */frontend
         language_version: "3.9"
   - repo: https://github.com/PyCQA/pylint
     # https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/f-string-without-interpolation.html

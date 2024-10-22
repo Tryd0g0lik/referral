@@ -270,6 +270,5 @@ pic/*
 **/pic/*
 archive/*
 */tests
-
-!referral/views_more/views_account.py
-!referral/views_more/views_profile.py
+frontend/*
+!.browserslistrc
