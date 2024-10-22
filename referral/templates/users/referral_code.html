@@ -26,7 +26,8 @@ current_user.is_authenticated() == True %}
 
       <div class="form">
         <p>Custom content added to the login form.</p>
-        <form id="referral" method="post">
+        <form id="referral"  action="/profile/referral/add"
+              method="post">
            {{ form.csrf_token }} <!-- CSRF защита -->
            <div class="form-group">
               {{ form.email.label(class="form-check-label") }}

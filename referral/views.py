@@ -11,6 +11,7 @@ from .models import Session
 from .models_more.model_users import Users
 from .views_more.views_account import views_accouts
 from .views_more.views_profile import views_profiles
+from .views_more.views_referral import views_referrals
 
 
 def app_router():
@@ -18,6 +19,8 @@ def app_router():
     views_accouts(app_)
 
     views_profiles(app_)
+
+    views_referrals(app_)
 
     def delete_old_users():
         """Here  all tokens we delete where token time was expired"""
