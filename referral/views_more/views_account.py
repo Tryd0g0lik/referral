@@ -5,14 +5,13 @@ from cfgv import ValidationError
 from flask import (flash, redirect, render_template, request,  # jsonify,
                    url_for)
 from flask_login import login_user
-# from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer
 # URL-TOKEN
 from referral.flasker import csrf
 from referral.user_login import UserLogin
 # ENVIRONMENT
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 # LOCAL LIB
-from referral.tokenization import EmailToGenerateToken
 from referral.flasker import app_type
 from referral.forms.form_registration import GetFormRegistration
 from referral.forms.form_login import GetFormAuthorization
@@ -28,12 +27,10 @@ def views_accouts(app_) -> app_type:
     :param app_: This is a flask's app
     :return: app_
     """
-    et = EmailToGenerateToken()
-    # https://itsdangerous.palletsprojects.com/en/2.2.x/url_safe/#itsdangerous.url_safe.URLSafeSerializer
-    # s = URLSafeTimedSerializer(app_.secret_key)
-   
-    # def generate_token(email: str) -> str:
-    #     return s.dumps(email, salt="email-confirm")
+    s = URLSafeTimedSerializer(app_.secret_key)
+
+    def generate_token(email: str) -> str:
+        return s.dumps(email, salt="email-confirm")
 
     # USER ACCOUNT
     @app_.route(
@@ -90,8 +87,7 @@ def views_accouts(app_) -> app_type:
                 )
                 
                 # AUTHENTICATION FROM THE EMAIL
-                # token = generate_token(normalized_email)
-                token = et.generate_dumps_token(normalized_email)
+                token = generate_token(normalized_email)
                 if normalized_email:
                     user.activation_token = token
                     user.token_created_at = datetime.utcnow()
@@ -218,15 +214,13 @@ def views_accouts(app_) -> app_type:
             "GET",
         ],
     )
-    async def activate(token: str):
+    async def activate(token):
         """This is activation function"""
         sess = Session()
         
         try:
             # LOGIC DECODE a token
-            # email = s.loads(token, salt="email-confirm", max_age=120)
-            et.set_load_token(token)
-            email = et.get_load_token()
+            email = s.loads(token, salt="email-confirm", max_age=120)
             user = sess.query(Users).filter_by(email=email).first()
             
             # LOGIC a USER ACTIVATION
@@ -262,51 +256,5 @@ def views_accouts(app_) -> app_type:
         finally:
             sess.commit()
             sess.close()
-
-    @app_.route(
-        "/deactivate/<token>",
-    )
-    async def exit(token: str) -> str:
-        """
-        User deactivate
-        :param token: str,
-        :return:
-        """
-        sess = session()
-        
-        try:
-            et.set_load_token(token)
-            email = et.get_load_token()
-            user = sess.query(Users).filter_by(email=email).first()
-            # LOGIC a USER DEACTIVATION
-            if user and user.activation_token and \
-                user.activation_token == token:
-                user.is_active = False
-                user.activation_token = None
-                sess.commit()
-                sess.close()
-                
-                userlogin = UserLogin()
-                userlogin.create(user)
-                userlogin.is_authenticated(status=False)
-                userlogin.is_anonymous(status=True)
-                userlogin.is_active(status=False)
-            
-                @app_.before_request
-                def clear_session():
-                    session.clear()
-                message = "User was deactivate"
-                return redirect(url_for("login",
-                                       title="Главная",
-                                       message=message
-                                        ))
-        except Exception as e:
-            print(f"[activate]: Error => {e.__str__()}")
-            flash("The exit link is invalid or has expired.", "danger")
-            sess.commit()
-            sess.close()
-            return redirect(url_for("login"))
-      
-           
-
+    
     return app_

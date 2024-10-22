@@ -20,11 +20,7 @@ from referral.postman.sender import send_activation_email
 
 
 def views_referrals(app_):
-    # https://itsdangerous.palletsprojects.com/en/2.2.x/url_safe/#itsdangerous.url_safe.URLSafeSerializer
-    s = URLSafeTimedSerializer(
-        secret_key=app_.secret_key,
-        
-    )
+    
     @app_.route(
         "/profile/referral",
         methods=[

@@ -27,16 +27,16 @@ class UserLogin:
         self.__user = user.__dict__
         return self
 
-    def is_authenticated(self, status: bool = True) -> bool:
+    def is_authenticated(self) -> bool:
         """Here is a property of Authenticate"""
-        return status
+        return True
 
-    def is_active(self, status: bool = True) -> bool:
+    def is_active(self) -> bool:
         """Here is change an user's status."""
-        return status
+        return True
 
-    def is_anonymous(self, status: bool = False) -> bool:
-        return status
+    def is_anonymous(self) -> bool:
+        return False
 
     def get_id(self) -> str:
         """

@@ -1,7 +1,7 @@
 """Here a router of the flask app."""
 
 from datetime import datetime, timedelta
-import json
+
 from flask import render_template, request
 
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
@@ -58,10 +58,6 @@ def app_router() -> str:
         Here is a main page uploading
         :return:
         """
-        manifest = {}
-        # with open('referral/static/scripts/manifest.json') as f:
-        #     manifest = json.load(f)
-        # js_file = manifest['main.js']  # Замените на нужный ключ из манифеста
         if request.method == "GET":
             # Удаляем users которые просрочили подтверждение email через
             # ссылку-токен на почте.
@@ -72,8 +68,7 @@ def app_router() -> str:
             # Преобразование данных формы в словарь
             # params = request.form.to_dist()
             pass
-        return render_template("index.html", message=None,
-                               ) #js_file=js_file
+        return render_template("index.html", message=None)
 
     return app_
 
