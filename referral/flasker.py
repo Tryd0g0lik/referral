@@ -19,7 +19,7 @@ from dotenv_ import (EMAIL_HOST, EMAIL_PORT, MAIL_DEFAULT_SENDER,
                      PROJECT_REFERRAL_SETTING_POSTGRES_USER)
 
 
-def create_flask():
+def create_flask() -> dict:
     """
     Here is a basis function of flask. That is start
     :return: app flask
@@ -30,19 +30,11 @@ def create_flask():
     # jwt = JWTManager(app)
     csrf = CSRFProtect(app)
 
-    # app.config.update(
-    #     dict(
-    #         DATABASE=os.path.join(
-    #             app.root_path,
-    #             f"{PROJECT_REFERRAL_SETTING_POSTGRES_DB}.db"
-    #         )
-    #     )
-    # )
     DSN = f"postgresql://{PROJECT_REFERRAL_SETTING_POSTGRES_USER}:\
-    {PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
-    {PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:\
-    {PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/\
-    {PROJECT_REFERRAL_SETTING_POSTGRES_DB}"
+{PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
+{PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:\
+{PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/\
+{PROJECT_REFERRAL_SETTING_POSTGRES_DB}"
     app.config["SQLALCHEMY_DATABASE_URI"] = DSN
 
     app.config["JWT_COOKIE_SECURE"] = True
@@ -86,3 +78,4 @@ csrf = flask_dict["csrf"]
 bcrypt = flask_dict["bcrypt"]
 mail = flask_dict["mail"]
 login_manager = flask_dict["login_manager"]
+app_type = type(app_)

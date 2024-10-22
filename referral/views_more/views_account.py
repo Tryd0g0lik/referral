@@ -7,19 +7,21 @@ from flask import (flash, redirect, render_template, request,  # jsonify,
 from flask_login import login_user
 from itsdangerous import URLSafeTimedSerializer
 # URL-TOKEN
-
 from referral.flasker import csrf
 from referral.user_login import UserLogin
+# ENVIRONMENT
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
+# LOCAL LIB
+from referral.flasker import app_type
 from referral.forms.form_registration import GetFormRegistration
 from referral.forms.form_login import GetFormAuthorization
 from referral.models import Session
 from referral.models_more.model_users import Users
 from referral.postman.sender import send_activation_email
-# URL-TOKEN
 
 
-def views_accouts(app_) -> type(app_):
+
+def views_accouts(app_) -> app_type:
     """
     Parent for account's interface.
     :param app_: This is a flask's app

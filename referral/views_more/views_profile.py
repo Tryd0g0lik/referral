@@ -2,9 +2,10 @@
 from flask import (render_template)
 from flask_login import login_required
 from referral.forms.form_login import GetFormAuthorization
+# LOCAL LIB
+from referral.flasker import app_type
 
-
-def views_profiles(app_):
+def views_profiles(app_) -> app_type:
     """
     Parent for account's interface.
     :param app_: This is a flask's app
@@ -18,7 +19,7 @@ def views_profiles(app_):
         ],
     )
     @login_required
-    async def profiles():
+    async def profiles() -> str:
         """Opening a page for the user authorized
         This present a list of referral-code"""
         message = "Profile"

@@ -2,20 +2,10 @@
 
 import sqlalchemy as sq
 from sqlalchemy.orm import sessionmaker
-
-from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_DB,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_PORT,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_USER)
 from referral.flasker import app_
 from referral.models_more.model_init import Base
 
-DSN = f"postgresql://{PROJECT_REFERRAL_SETTING_POSTGRES_USER}:\
-{PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD}@\
-{PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:\
-{PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/\
-{PROJECT_REFERRAL_SETTING_POSTGRES_DB}"
+DSN: str = app_.config["SQLALCHEMY_DATABASE_URI"]
 engine = sq.create_engine(DSN, pool_pre_ping=True)
 Session = sessionmaker(bind=engine)
 

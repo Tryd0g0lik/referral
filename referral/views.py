@@ -14,7 +14,7 @@ from .views_more.views_profile import views_profiles
 from .views_more.views_referral import views_referrals
 
 
-def app_router():
+def app_router() -> str:
     """Total function"""
     views_accouts(app_)
 
@@ -53,7 +53,7 @@ def app_router():
             "POST",
         ],
     )
-    async def main_page():
+    async def main_page() -> str:
         """
         Here is a main page uploading
         :return:
