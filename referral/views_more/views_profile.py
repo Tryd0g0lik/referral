@@ -1,5 +1,5 @@
 """Views of profile"""
-from flask import (render_template)
+from flask import (render_template, session)
 from flask_login import login_required
 from referral.forms.form_login import GetFormAuthorization
 # LOCAL LIB
@@ -28,4 +28,11 @@ def views_profiles(app_) -> app_type:
         return render_template(
             "users/profile.html", title="Dashboard", message=message
         )
+    async def exit():
+        # clear session
+        # @app_.before_request
+        def clear_session():
+            session.clear()
+        clear_session()
+            
     return app_

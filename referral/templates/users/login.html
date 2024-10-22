@@ -1,50 +1,50 @@
-<head><script defer src="/scripts/main-main-260c08cd699ff6cadf32.js"></script><link href="/styles/style.css" rel="stylesheet"></head>{% extends 'layout/basis.html' %}
+{% extends 'layout/basis.html' %}
 
 {% if current_user and current_user.is_authenticated and
 current_user.is_authenticated() == True %}
-{% block title %}Вход в профиль{% endblock title %}
+  {% block title %}Вход в профиль{% endblock title %}
 {% endif %}
 {% block header %}
-{% if current_user and current_user._UserLogin__user and
-current_user._UserLogin__user.firstname %}
-This is page of user {{ current_user._UserLogin__user.firstname| title }}
-{% else %}
-Hallo World
-{% endif %}
+  {% if current_user and current_user._UserLogin__user and
+  current_user._UserLogin__user.firstname %}
+    This is page of user {{ current_user._UserLogin__user.firstname| title }}
+  {% else %}
+    Hallo World
+  {% endif %}
 {% endblock header %}
 {% block mainRowContribute %}
 
-{% if current_user and current_user.is_authenticated and
-current_user.is_authenticated() == True %}
-{% if current_user and current_user._UserLogin__user and
-current_user._UserLogin__user.firstname %}
-<h2>Здравствуйте, {{ current_user._UserLogin__user.firstname }}!</h2>
-{% endif %}
-{% else %}
-<h2>Вход</h2>
-<div class="form">
-  <p>Custom content added to the login form.</p>
-  <form id="loginin" method="post">
-    {{ form.csrf_token }} <!-- CSRF защита -->
-    <div class="form-group">
-      {{ form.email.label(class="form-check-label") }}
-      {{ form.email(class="form-control") }}
-      {% for error in form.email.errors %}
-      <div class="text-danger">{{ error }}</div>
-      {% endfor %}
-    </div>
-    <div class="form-group">
-      {{ form.password.label(class="form-check-label") }}
-      {{ form.password() }}
-      {% for error in form.password.errors %}
-      <div class="text-danger">{{ error }}</div>
-      {% endfor %}
-    </div>
-    {{ form.submit() }}
-  </form>
-</div>
-{% if message and message != None %}
-<div class="form-message">{{ message }}</div>
-{% endif %}
-{% endif %}
+  {% if current_user and current_user.is_authenticated and
+  current_user.is_authenticated() == True %}
+    {% if current_user and current_user._UserLogin__user and
+    current_user._UserLogin__user.firstname %}
+      <h2>Здравствуйте, {{ current_user._UserLogin__user.firstname }}!</h2>
+    {% endif %}
+  {% else %}
+      <h2>Вход</h2>
+      <div class="form">
+        <p>Custom content added to the login form.</p>
+        <form id="loginin" method="post">
+          {{ form.csrf_token }} <!-- CSRF защита -->
+          <div class="form-group">
+            {{ form.email.label(class="form-check-label") }}
+            {{ form.email(class="form-control") }}
+            {% for error in form.email.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="form-group">
+            {{ form.password.label(class="form-check-label") }}
+            {{ form.password() }}
+            {% for error in form.password.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {{ form.submit() }}
+        </form>
+      </div>
+    {% if message and message != None %}
+      <div class="form-message">{{ message }}</div>
+    {% endif %}
+  {% endif %}
 {% endblock mainRowContribute %}

@@ -49,7 +49,7 @@ def views_accouts(app_) -> app_type:
         
         error = "some_view"
         sess = Session()
-        if request.method == "POST" and form.validate_on_submit():
+        if request.method == "POST": #  and form.validate_on_submit()
             try:
                 # Pass the form's email field
                 normalized_email = form.validate_email(form.email)

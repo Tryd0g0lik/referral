@@ -2,99 +2,99 @@
 <!-- https://pythonhosted.org/Flask-Bootstrap/basic-usage.html#available-blocks -->
 
 {% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='styles/style.css')}}">
+  {{super()}}
+  <link rel="stylesheet" href="{{url_for('.static', filename='styles/style.css')}}">
 {% endblock %}
-<script src="{{ url_for('static', filename='dist/bundle.js') }}"></script>
+
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='scripts/main-[id]-[hash].js') }}"></script>
-{{super()}}
+  <script src="{{ url_for('static', filename='scripts/main-[id]-[hash].js') }}"></script>
+  {{super()}}
 {% endblock %}
 <meta charset="UTF-8">
 <meta name="viewpost" content="width-device-width, initial-scale=1,
  shrink-to-fit-no">
 <title>{% block title %}Главная{% endblock title %} - Account</title>
 {% block style %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
 {% endblock style %}
 
 <!-- Get the flash message -->
 {% block body %}
-{% block flashmessage %}
-{% with messages = get_flashed_messages() %}
-{% if messages %}
+  {% block flashmessage %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
 
-{{ message }}
+        {{ message }}
 
-{% endif %}
-{% endwith %}
-{% endblock flashmessage %}
-<header>
-  <h1 class="display-1 text-center">
-    {% block header %}
-    It's your the Account
-    {% endblock header %}
-  </h1>
-  {% block content %}
-  <h2>O caйте</h2>
-  {% endblock content %}
-  {% block headerContribute %}{% endblock headerContribute %}
+      {% endif %}
+    {% endwith %}
+  {% endblock flashmessage %}
+  <header>
+     <h1 class="display-1 text-center">
+      {% block header %}
+        It's your the Account
+      {% endblock header %}
+    </h1>
+    {% block content %}
+      <h2>O caйте</h2>
+    {% endblock content %}
+    {% block headerContribute %}{% endblock headerContribute %}
 
-</header>
+  </header>
 
-<main>
-  <div class="row">
-    {% block navbar %}
-    <div class="nav-item navbar navbar-default">
-      <ul class="col nav justify-content-end border nav navbar-nav">
-        <li class="nav-item active">
-          <a href="{{ url_for('main_page') }}" class="nav-link">
-            Главная
-          </a>
-        </li>
-
-        {% if current_user and current_user.is_authenticated and
-        current_user.is_authenticated() %}
-        <li class="nav-item dropdown">
-        </li><li class="nav-item">
-          <a href="{{ url_for('profiles') }}" class="nav-link dropdown-toggle" tada-togle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            Профиль
-          </a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="{{ url_for('referral_form') }}">
-              Добавить код
+  <main>
+    <div class="row">
+      {% block navbar %}
+        <div class="nav-item navbar navbar-default">
+        <ul class="col nav justify-content-end border nav navbar-nav">
+          <li class="nav-item active">
+            <a href="{{ url_for('main_page') }}" class="nav-link">
+              Главная
             </a>
-            <a class="dropdown-item" href="{{ url_for('referral_change') }}">
-              Изменить код
-            </a>
-            <a class="dropdown-item" href="{{ url_for('referral_delete') }}">
-              Удалить пароль
-            </a>
-            <a class="dropdown-item" href="{{ url_for('') }}">
-              Удалить пароль
-            </a>
-          </div>
-        </li>
-        
-        {% else %}
-        <li class="nav-item">
-          <a href="{{ url_for('register') }}" class="nav-link">Регистрация</a>
-        </li>
-        <li class="nav-item">
-          <a href="{{ url_for('login') }}">Вход</a>
-        </li>
-        {% endif %}
-      </ul>
+          </li>
 
+          {% if current_user and current_user.is_authenticated and
+          current_user.is_authenticated() %}
+          <li class="nav-item dropdown">
+          </li><li class="nav-item">
+            <a href="{{ url_for('profiles') }}" class="nav-link dropdown-toggle" tada-togle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              Профиль
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{{ url_for('referral_form') }}">
+                Добавить код
+              </a>
+              <a class="dropdown-item" href="{{ url_for('referral_change') }}">
+                Изменить код
+              </a>
+              <a class="dropdown-item" href="{{ url_for('referral_delete') }}">
+                Удалить пароль
+              </a>
+              <a class="dropdown-item" href="{{ url_for('') }}">
+                Удалить пароль
+              </a>
+            </div>
+          </li>
+          
+          {% else %}
+          <li class="nav-item">
+            <a href="{{ url_for('register') }}" class="nav-link">Регистрация</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('login') }}">Вход</a>
+          </li>
+          {% endif %}
+        </ul>
+
+      </div>
+      {% endblock navbar %}
+      {% block mainRowContribute %}{% endblock mainRowContribute %}
+      <section class="body">
+        {% block sectionBody %}{% endblock sectionBody %}
+      </section>
     </div>
-    {% endblock navbar %}
-    {% block mainRowContribute %}{% endblock mainRowContribute %}
-    <section class="body">
-      {% block sectionBody %}{% endblock sectionBody %}
-    </section>
-  </div>
-</main>
+  </main>
 {% endblock body %}
 
-<!--<script defer src="/scripts/main-main-260c08cd699ff6cadf32.js"></script><link href="/styles/style.css" rel="stylesheet"></head>-->
+<!--<script defer src="/scripts/main-main-2d8f1d54112e739ca295.js"></script><link href="/styles/style.css" rel="stylesheet"></head>-->
