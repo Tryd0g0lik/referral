@@ -24,7 +24,7 @@ current_user.is_authenticated() == True %}
       <h2>Вход</h2>
       <div class="form">
         <p>Custom content added to the login form.</p>
-        <form id="loginin" method="post">
+        <form id="loginin" method="post" >
           {{ form.csrf_token }} <!-- CSRF защита -->
           <div class="form-group">
             {{ form.email.label(class="form-check-label") }}

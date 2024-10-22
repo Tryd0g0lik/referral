@@ -31,8 +31,6 @@ def views_profiles(app_) -> app_type:
     async def exit():
         # clear session
         # @app_.before_request
-        def clear_session():
-            session.clear()
-        clear_session()
+        pass
             
     return app_
