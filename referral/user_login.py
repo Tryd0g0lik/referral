@@ -38,12 +38,14 @@ class UserLogin:
     def is_anonymous(self) -> bool:
         return False
 
-    def get_id(self) -> str:
+    def get_id(self) -> [str, bool]:
         """
 
         :return: Here , an id from user.
         """
         ind = self.__user["id"]
+        if not ind:
+            return False
         return str(ind)
 
     def get_token(self) -> bool:

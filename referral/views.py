@@ -90,7 +90,9 @@ def load_user(user_id) -> [object, dict]:
     user = sess.query(Users).filter_by(id=int(user_id)).first()
     userlogin = UserLogin()
     userlogin.create(user)
-    userlogin.fromDB(userlogin.get_id())
+    str_bool = userlogin.get_id()
+    if type(str_bool) != bool:
+        userlogin.fromDB()
     sess.close()
 
     return userlogin

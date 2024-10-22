@@ -25,7 +25,8 @@ def create_flask() -> dict:
     :return: app flask
     """
     app = Flask(__name__, template_folder="templates")
-
+    # Clear session or perform any necessary logout logic
+   
     app.config.from_object(__name__)
     # jwt = JWTManager(app)
     csrf = CSRFProtect(app)
@@ -59,9 +60,9 @@ def create_flask() -> dict:
     login_manager.login_view = "login"
     
     # clear session
-    # @app_.before_request
-    # def clear_session():
-    #     session.clear()
+    @app.before_request
+    def clear_session():
+        session.clear()
 
     return {
         "app": app,
