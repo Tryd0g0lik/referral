@@ -26,3 +26,17 @@ def generate_unique_referral_code(func: Callable[[], str]) -> str:
     # HASH
     hashed_code = bcrypt.hashpw(code.encode("utf-8"), bcrypt.gensalt())
     return hashed_code.decode("utf-8")
+
+
+def postman_token(email: str, user: object):
+    """
+    Token create and sending to the email.
+    :param email: str. User's email is addressee.
+    :param user: object from the db.
+    :return: is empty.
+    """
+    # AUTHENTICATION FROM THE EMAIL
+    token = generate_token(email)
+    user.activation_token = token
+    user.token_created_at = datetime.utcnow()
+    send_activation_email(normalized_email, token)
