@@ -1,13 +1,9 @@
-"""Here a token generater """
+"""Here a token generater"""
 
 import uuid
-from datetime import datetime
-from typing import Callable, Dict
 from itsdangerous import URLSafeTimedSerializer
-import bcrypt
 
 from referral.flasker import app_
-from referral.postman.sender import send_activation_email
 
 tokens = set()
 
@@ -24,21 +20,15 @@ def generate_unique_token() -> str:
             return new_token
 
 
-def generate_unique_referral_code(func: Callable[[], str]) -> str:
-    code = generate_unique_token()
-
-    # HASH
-    hashed_code = bcrypt.hashpw(code.encode("utf-8"), bcrypt.gensalt())
-    return hashed_code.decode("utf-8")
-
 class EmailToGenerateToken:
     """
     This class is a token's generate.
     :param app: object from 'app = Flask(__name__)' for a entrypoint
     """
+    
     def __init__(self, app: type(app_)):
         self.__s = URLSafeTimedSerializer(app.secret_key)
-   
+    
     def generate_dumps_token(self, email: str) -> str:
         """
         This is token's generate. In token inserting email.
@@ -56,7 +46,6 @@ class EmailToGenerateToken:
         """
         self.__token: [str, None] = token
     
-     
     def get_load_token(self) -> str:
         """
         This a method is addition for 'set_load_token'
@@ -66,10 +55,10 @@ class EmailToGenerateToken:
         token += self.__s.loads(
             self.__token[0:],
             salt="email-confirm",
-            max_age=120)
+            max_age=120
+        )
         
         return token
 
 
 
-    

@@ -10,8 +10,8 @@ from itsdangerous import URLSafeTimedSerializer
 from referral.flasker import csrf
 from referral.forms.form_token_second import GetFormForToken
 from referral.postman.postman_tokens import postman_token
-from referral.tokenization import EmailToGenerateToken
-from referral.user_login import UserLogin
+from referral.intarfeces.tokenization import EmailToGenerateToken
+from referral.intarfeces.user_login import UserLogin
 # ENVIRONMENT
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 # LOCAL LIB

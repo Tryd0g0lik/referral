@@ -1,6 +1,6 @@
 from datetime import datetime
 from referral.postman.sender import send_activation_email
-from referral.tokenization import EmailToGenerateToken
+from referral.intarfeces.tokenization import EmailToGenerateToken
 
 
 def postman_token(email: str, user: object, app: object) -> str:

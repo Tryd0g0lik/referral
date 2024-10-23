@@ -84,7 +84,7 @@ def load_user(user_id) -> [object, dict]:
     """
     from .models import Session
     from .models_more.model_users import Users
-    from .user_login import UserLogin
+    from referral.intarfeces.user_login import UserLogin
 
     sess = Session()
     user = sess.query(Users).filter_by(id=int(user_id)).first()

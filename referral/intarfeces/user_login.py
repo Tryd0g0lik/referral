@@ -14,7 +14,7 @@ class UserLogin:
     the event authorization. This is
     for  a LoginManager!!
     """
-
+    
     def create(self, user):
         """
         This method is received user's object from entrypoint. After,
@@ -27,7 +27,7 @@ class UserLogin:
             return self
         self.__user = user.__dict__
         return self
-
+    
     def is_authenticated(self, status=True) -> bool:
         """
         Here is a property of Authenticate
@@ -37,7 +37,7 @@ class UserLogin:
         """
         
         return status
-
+    
     def is_active(self, status=True) -> bool:
         """
         Here is change an user's status of is_active.
@@ -46,7 +46,7 @@ class UserLogin:
         :return: status
         """
         return status
-
+    
     def is_anonymous(self, status=False) -> bool:
         """
         Here is change an user's status of is_anonymous.
@@ -55,7 +55,7 @@ class UserLogin:
         :return: status
         """
         return status
-
+    
     def get_id(self) -> str:
         """
 
@@ -63,21 +63,21 @@ class UserLogin:
         """
         ind = self.__user["id"]
         return str(ind)
-
+    
     def get_token(self) -> bool:
         """
         This is 'activation_token' from db.
         :return: True or False
         """
         return self.__user["activation_token"]
-
+    
     def get_firstname(self) -> str:
         """
         This is 'firstname' from db.
         :return: True or False
         """
         return self.__user["firstname"]
-
+    
     def fromDB(self, user_id: str) -> dict:
         """
         For of decorate '@login_manager.user_loader'
