@@ -52,7 +52,7 @@ async def views_accouts(app_) -> app_type:
         
         error = "some_view"
         sess = Session()
-        if request.method == "POST": # and form.validate_on_submit():
+        if request.method == "POST" and form.validate_on_submit():
             try:
                 # Pass the form's email field
                 
@@ -101,7 +101,7 @@ async def views_accouts(app_) -> app_type:
                 if normalized_email:
                     # First sending the token to the user's email. This an event
                     # when user itself beginning registration.
-                    postman_token(normalized_email, user)
+                    postman_token(normalized_email, user, app_)
                     error = "OK"
                 else:
                     error = "NOT OK"
@@ -237,7 +237,6 @@ async def views_accouts(app_) -> app_type:
             g = EmailToGenerateToken(app_)
             g.set_load_token(token)
             email = g.get_load_token()
-            # email = s.loads(token, salt="email-confirm", max_age=120)
             user = sess.query(Users).filter_by(email=email).first()
             
             # LOGIC a USER ACTIVATION

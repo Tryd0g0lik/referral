@@ -48,14 +48,23 @@ async def views_referrals(app_):
     async def referral_add():
         """This present a list of referral-code"""
         message = "OK"
-        form_referral = GetFormReferralCode()
-        if request.method == "POST" and form_referral.validate_on_submit():
-            pass
+        form = GetFormReferralCode()
+        if request.method == "POST" and form.validate_on_submit():
+            email = form.email.data
+            description = form.email.data
+            """"
+            
+            Проверить наличие почты в базе .
+            После создать ссылку
+            хешировать.
+            
+            
+            """
         
         return render_template(
             "users/referral_code.html",
             title="Создать referral code",
-            form=form_referral,
+            form=form,
             message=message,
         )
     
