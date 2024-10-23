@@ -1,9 +1,13 @@
 """Here a token generater """
 
 import uuid
+from datetime import datetime
 from typing import Callable, Dict
-
+from itsdangerous import URLSafeTimedSerializer
 import bcrypt
+
+from referral.flasker import app_
+from referral.postman.sender import send_activation_email
 
 tokens = set()
 
@@ -27,16 +31,36 @@ def generate_unique_referral_code(func: Callable[[], str]) -> str:
     hashed_code = bcrypt.hashpw(code.encode("utf-8"), bcrypt.gensalt())
     return hashed_code.decode("utf-8")
 
+class EmailToGenerateToken:
+    def __init__(self, app: type(app_)):
+        self.__s = URLSafeTimedSerializer(app.secret_key)
+   
+    def generate_dumps_token(self, email: str) -> str:
+        return self.__s.dumps(email, salt="email-confirm")
+    
+    def set_load_token(self, token: str) -> None:
+        """
+        Token receive to an event point
+        :param token: str
+        :return:
+        """
+        self.__token: [str, None] = token
+    
+     
+    def get_load_token(self) -> str:
+        """
+        
+        :return: 'email': str
+        
+        """
+        token = ''
+        token += self.__s.loads(
+            self.__token[0:],
+            salt="email-confirm",
+            max_age=120)
+        
+        return token
 
-def postman_token(email: str, user: object):
-    """
-    Token create and sending to the email.
-    :param email: str. User's email is addressee.
-    :param user: object from the db.
-    :return: is empty.
-    """
-    # AUTHENTICATION FROM THE EMAIL
-    token = generate_token(email)
-    user.activation_token = token
-    user.token_created_at = datetime.utcnow()
-    send_activation_email(normalized_email, token)
+
+
+    

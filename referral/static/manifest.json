@@ -1,10 +1,11 @@
 {
   "main.css": "/styles/style.css",
-  "main.js": "/scripts/main-main-2d8f1d54112e739ca295.js",
+  "main.js": "/scripts/main-main-0753a71cdac1c905f7d2.js",
   "../templates/layout/basis.html": "/../templates/layout/basis.html",
   "../templates/users/register.html": "/../templates/users/register.html",
-  "../templates/users/login.html": "/../templates/users/login.html",
   "../templates/users/rreferral_code.html": "/../templates/users/rreferral_code.html",
+  "../templates/users/login.html": "/../templates/users/login.html",
+  "../templates/users/token_repeat.html": "/../templates/users/token_repeat.html",
   "../templates/users/password_change.html": "/../templates/users/password_change.html",
   "../templates/users/profile_change.html": "/../templates/users/profile_change.html",
   "../templates/users/profile_delete.html": "/../templates/users/profile_delete.html",

@@ -38,14 +38,14 @@ class UserLogin:
     def is_anonymous(self) -> bool:
         return False
 
-    def get_id(self) -> [str, bool]:
+    def get_id(self) -> str: # [str, bool]:
         """
 
         :return: Here , an id from user.
         """
         ind = self.__user["id"]
-        if not ind:
-            return False
+        # if not ind:
+        #     return False
         return str(ind)
 
     def get_token(self) -> bool:
@@ -73,6 +73,6 @@ class UserLogin:
         except Exception as err:
             print(f"[UserLogin => fromDB]: Error => {err.__str__()}")
         finally:
-            session.close()
+            # session.close()
             user = self.__user
             return user

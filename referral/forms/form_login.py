@@ -15,9 +15,8 @@ class GetFormAuthorization(FlaskForm):
     email = StringField(
         "email",
         validators=[
-            validators.InputRequired(),
-            validators.Email(),
             validators.DataRequired(),
+            validators.Email(),
         ],
     )
     password = StringField(

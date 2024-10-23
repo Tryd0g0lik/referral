@@ -19,7 +19,7 @@ from referral.postman.sender import send_activation_email
 
 
 
-def views_referrals(app_):
+async def views_referrals(app_):
     
     @app_.route(
         "/profile/referral",

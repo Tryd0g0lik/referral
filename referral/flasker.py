@@ -60,9 +60,9 @@ def create_flask() -> dict:
     login_manager.login_view = "login"
     
     # clear session
-    @app.before_request
-    def clear_session():
-        session.clear()
+    # @app.before_request
+    # def clear_session():
+    #     session.clear()
 
     return {
         "app": app,

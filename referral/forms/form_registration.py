@@ -1,11 +1,10 @@
 """
 Flask form for page registration
 """
-
-from cfgv import ValidationError
-from email_validator import EmailNotValidError, validate_email
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, SubmitField, validators
+
+from referral.forms.validators import validate_emails
 
 
 class GetFormRegistration(FlaskForm):
@@ -58,13 +57,11 @@ class GetFormRegistration(FlaskForm):
     )
     submit = SubmitField("Регистрировать", render_kw={"class": "btn btn-secondary"})
 
-    def validate_email(self, email) -> str:
-
-        if len(email.data) < 7:
-            raise ValidationError("We're sorry, you must be 13 or older to register")
-        try:
-            emailinfo = validate_email(email.data, check_deliverability=False)
-            email = emailinfo.normalized
-            return email
-        except EmailNotValidError as err:
-            print(f"This is an email not a valid: {str(err)}")
+    def validator_register_email(self, email: str) -> [str, bool]:
+        """
+          This is a email's validator.
+          :param email: str. Min. Length is 7 symbols.
+          :return: str if is all Ok and False if what wrong.
+          """
+        strBool = validate_emails(email)
+        return strBool

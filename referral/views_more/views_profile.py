@@ -5,7 +5,7 @@ from referral.forms.form_login import GetFormAuthorization
 # LOCAL LIB
 from referral.flasker import app_type
 
-def views_profiles(app_) -> app_type:
+async def views_profiles(app_) -> app_type:
     """
     Parent for account's interface.
     :param app_: This is a flask's app

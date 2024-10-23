@@ -1,9 +1,9 @@
 """Here a router of the flask app."""
 
 from datetime import datetime, timedelta
-
 from flask import render_template, request
-
+from referral.flasker import csrf
+import asyncio as asy
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from referral.flasker import app_, login_manager
 
@@ -14,14 +14,14 @@ from .views_more.views_profile import views_profiles
 from .views_more.views_referral import views_referrals
 
 
-def app_router() -> str:
+async def app_router() -> str:
     """Total function"""
-    views_accouts(app_)
-
-    views_profiles(app_)
-
-    views_referrals(app_)
-
+    await asy.gather(
+    asy.create_task(views_accouts(app_)),
+    asy.create_task(views_profiles(app_)),
+    asy.create_task(views_referrals(app_)),
+    )
+    
     def delete_old_users():
         """Here  all tokens we delete where token time was expired"""
         sess = Session()
@@ -90,9 +90,9 @@ def load_user(user_id) -> [object, dict]:
     user = sess.query(Users).filter_by(id=int(user_id)).first()
     userlogin = UserLogin()
     userlogin.create(user)
-    str_bool = userlogin.get_id()
-    if type(str_bool) != bool:
-        userlogin.fromDB()
+    user_id = userlogin.get_id()
+    
+    userlogin.fromDB(user_id)
     sess.close()
 
     return userlogin

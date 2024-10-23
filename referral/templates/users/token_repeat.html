@@ -1,0 +1,28 @@
+<head><script defer src="/scripts/main-main-0753a71cdac1c905f7d2.js"></script><link href="/styles/style.css" rel="stylesheet"></head>{% extends "layout/basis.html" %}
+
+
+{% block title %}
+Your an Email for the token send repeat
+{% endblock title %}
+
+{% block header %}
+<h2>Your an Email for the token send repeat</h2>
+{% endblock header %}
+{% block mainRowContribute %}
+
+<div class="form">
+  <p>Custom content added to the login form.</p>
+  <form id="token-repeat" method="post">
+    {{ form.csrf_token }} <!-- CSRF защита -->
+    <div class="form-group">
+      {{ form.email.label(class="form-check-label") }}
+      {{ form.email(class="form-control") }}
+      {% for error in form.email.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+    {{ form.submit() }}
+  </form>
+</div>
+
+{% endblock mainRowContribute %}
