@@ -21,7 +21,7 @@ from referral.postman.sender import send_activation_email
 
 
 
-def views_accouts(app_) -> app_type:
+async def views_accouts(app_) -> app_type:
     """
     Parent for account's interface.
     :param app_: This is a flask's app
@@ -49,7 +49,7 @@ def views_accouts(app_) -> app_type:
         
         error = "some_view"
         sess = Session()
-        if request.method == "POST": #  and form.validate_on_submit()
+        if request.method == "POST": # and form.validate_on_submit():
             try:
                 # Pass the form's email field
                 normalized_email = form.validate_email(form.email)
@@ -86,12 +86,10 @@ def views_accouts(app_) -> app_type:
                     is_active=False,
                 )
                 
-                # AUTHENTICATION FROM THE EMAIL
-                token = generate_token(normalized_email)
+              
                 if normalized_email:
-                    user.activation_token = token
-                    user.token_created_at = datetime.utcnow()
-                    send_activation_email(normalized_email, token)
+                    
+                        
                     error = "OK"
                 else:
                     error = "NOT OK"
@@ -133,6 +131,7 @@ def views_accouts(app_) -> app_type:
         "/login",
         methods=["GET", "POST"],
     )
+    @csrf.exempt
     async def login():
         """Opening a page of authorization"""
         # AUTHENTIFICATION logic
@@ -182,6 +181,8 @@ def views_accouts(app_) -> app_type:
                     form=form_loginin,
                     message="login successful!",
                 )
+            elif not form_loginin.validate_on_submit():
+                print(f"[login]: Not validate_on_submit => {form_loginin.errors}")
         
         elif request.args.get("token") and len(request.args.get("token")) > 10:
             try:
@@ -211,7 +212,7 @@ def views_accouts(app_) -> app_type:
     @app_.route(
         "/activate/<token>",
         methods=[
-            "GET",
+            "GET", "POST"
         ],
     )
     async def activate(token):
@@ -220,35 +221,36 @@ def views_accouts(app_) -> app_type:
         
         try:
             # LOGIC DECODE a token
-            email = s.loads(token, salt="email-confirm", max_age=120)
-            user = sess.query(Users).filter_by(email=email).first()
-            
-            # LOGIC a USER ACTIVATION
-            if user and user.activation_token == token:
-                if user.token_created_at and (
-                  datetime.utcnow() - user.token_created_at
-                ) < timedelta(minutes=int(TOKEN_TIME_MINUTE_EXPIRE)):
-                    
-                    # Delete a token time
-                    user.token_created_at = None
-                    # User activation
-                    user.is_activated = True
-                    flash(
-                        "Your account has been activated! You can now log in.",
-                        "success",
-                    )
+            if request.method == "GET":
+                email = s.loads(token, salt="email-confirm", max_age=120)
+                user = sess.query(Users).filter_by(email=email).first()
                 
+                # LOGIC a USER ACTIVATION
+                if user and user.activation_token == token:
+                    if user.token_created_at and (
+                      datetime.utcnow() - user.token_created_at
+                    ) < timedelta(minutes=int(TOKEN_TIME_MINUTE_EXPIRE)):
+                        
+                        # Delete a token time
+                        user.token_created_at = None
+                        # User activation
+                        user.is_activated = True
+                        flash(
+                            "Your account has been activated! You can now log in.",
+                            "success",
+                        )
+                    
+                    else:
+                        flash("Invalid activation token.", "danger")
+                        # Redirecting to an activation/authorization page
+                        return redirect(url_for("login"))
                 else:
-                    flash("Invalid activation token.", "danger")
-                    # Redirecting to an activation/authorization page
+                    # Here, a Token is can not find and we make redirect
+                    flash("Token not found", "danger")
                     return redirect(url_for("login"))
-            else:
-                # Here, a Token is can not find and we make redirect
-                flash("Token not found", "danger")
-                return redirect(url_for("login"))
-            # Redirect when a successful activate
-            return redirect(url_for("login", token=token))
-        
+                # Redirect when a successful activate
+                return redirect(url_for("login", token=token))
+            
         except Exception as e:
             print(f"[activate]: Error => {e.__str__()}")
             flash("The activation link is invalid or has expired.", "danger")
