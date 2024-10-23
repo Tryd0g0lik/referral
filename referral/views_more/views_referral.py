@@ -1,21 +1,6 @@
-from datetime import datetime, timedelta
-
-from cfgv import ValidationError
-from flask import (flash, redirect, render_template, request,  # jsonify,
-                   url_for)
-from flask_login import login_user, login_required
-from itsdangerous import URLSafeTimedSerializer
-# URL-TOKEN
-
-from referral.flasker import csrf
+from flask import (render_template, request)
+from flask_login import  login_required
 from referral.forms.form_referral import GetFormReferralCode
-from referral.user_login import UserLogin
-from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
-from referral.forms.form_registration import GetFormRegistration
-from referral.forms.form_login import GetFormAuthorization
-from referral.models import Session
-from referral.models_more.model_users import Users
-from referral.postman.sender import send_activation_email
 
 
 
