@@ -2,8 +2,6 @@
 This is a description of user_login.
 """
 
-from typing import Union
-
 from referral.models import Session
 from referral.models_more.model_users import Users
 
@@ -12,46 +10,72 @@ session = Session()
 
 class UserLogin:
     """
-    This a class make the present of single user after
-    the event authorization. It is
-    for  a LoginManager work
+    This a class/subclass make the present of single user after
+    the event authorization. This is
+    for  a LoginManager!!
     """
 
     def create(self, user):
         """
+        This method is received user's object from entrypoint. After,
+        transfer from the object to dict.
+        After transfer data into a private variable (self)
         :param user: object
-        :return: user's object from db
+        :return: self
         """
         if not user:
             return self
         self.__user = user.__dict__
         return self
 
-    def is_authenticated(self) -> bool:
-        """Here is a property of Authenticate"""
-        return True
+    def is_authenticated(self, status=True) -> bool:
+        """
+        Here is a property of Authenticate
+        By default value is a True
+        :param status: bool.
+        :return: status
+        """
+        
+        return status
 
-    def is_active(self) -> bool:
-        """Here is change an user's status."""
-        return True
+    def is_active(self, status=True) -> bool:
+        """
+        Here is change an user's status of is_active.
+        By default value is a True
+        :param status: bool.
+        :return: status
+        """
+        return status
 
-    def is_anonymous(self) -> bool:
-        return False
+    def is_anonymous(self, status=False) -> bool:
+        """
+        Here is change an user's status of is_anonymous.
+        By default value is a False
+        :param status: bool.
+        :return: status
+        """
+        return status
 
-    def get_id(self) -> str: # [str, bool]:
+    def get_id(self) -> str:
         """
 
         :return: Here , an id from user.
         """
         ind = self.__user["id"]
-        # if not ind:
-        #     return False
         return str(ind)
 
     def get_token(self) -> bool:
+        """
+        This is 'activation_token' from db.
+        :return: True or False
+        """
         return self.__user["activation_token"]
 
     def get_firstname(self) -> str:
+        """
+        This is 'firstname' from db.
+        :return: True or False
+        """
         return self.__user["firstname"]
 
     def fromDB(self, user_id: str) -> dict:
@@ -69,7 +93,7 @@ class UserLogin:
                 the user.id to install int('-1')
                 """
                 print("[UserLogin => fromDB]: None")
-                return self
+                return self.__dict__
         except Exception as err:
             print(f"[UserLogin => fromDB]: Error => {err.__str__()}")
         finally:
