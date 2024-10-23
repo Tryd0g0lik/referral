@@ -153,7 +153,7 @@ async def views_accouts(app_) -> app_type:
         
         message = None
         if request.method == "POST":
-            if form_loginin: # form_loginin.validate_on_submit():
+            if form_loginin and form_loginin.validate_on_submit():
                 # Received data for a authorization
                 email = form_loginin.email.data
                 password = form_loginin.password.data
