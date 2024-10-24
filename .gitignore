@@ -270,5 +270,6 @@ pic/*
 **/pic/*
 archive/*
 */tests
-frontend/*
+frontend
+
 !.browserslistrc
