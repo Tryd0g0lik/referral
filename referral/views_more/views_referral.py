@@ -52,8 +52,9 @@ async def views_referrals(app_):
         if request.method == "POST" and form.validate_on_submit():
             email = form.email.data
             description = form.email.data
-            """"
             
+            """"
+            generate_unique_referral_code
             Проверить наличие почты в базе .
             После создать ссылку
             хешировать.
