@@ -2,7 +2,8 @@
 
 from datetime import datetime, timedelta
 from flask import render_template, request
-from referral.flasker import csrf
+# from referral.flasker import csrf
+from flask import session as s
 import asyncio as asy
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from referral.flasker import app_, login_manager
@@ -23,7 +24,7 @@ async def app_router() -> str:
     )
     
     def delete_old_users():
-        """Here  all tokens we delete where token time was expired"""
+        """Here  all tokens we delete where token time was expired session['_user_id']"""
         sess = Session()
         try:
             threshold_time = datetime.utcnow() - timedelta(
@@ -32,14 +33,19 @@ async def app_router() -> str:
             old_users = (
                 sess.query(Users).filter(Users.token_created_at < threshold_time).all()
             )
-
+            
+            # DEVelop's mode - The status "is_active" (from db) - cleaning
+            s['_user_id'] = None
             if len(old_users) > 0:
                 for user in old_users:
-                    sess.delete(user)
+                    # sess.delete(user)
+                    u = sess.query(Users).filter_by(id=user.id).first()
+                    u.activation_token = None
+                    
                 print("[delete_old_users]: Now the  old users all was removed")
             else:
                 print(f"[delete_old_users]: Here not found the old users")
-
+            
         except Exception as err:
             print(f"[delete_old_users]: Error => {err.__str__()}")
         finally:
