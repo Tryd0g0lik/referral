@@ -23,7 +23,8 @@ def generate_unique_token() -> str:
 class EmailToGenerateToken:
     """
     This class is a token's generate.
-    :param app: object from 'app = Flask(__name__)' for a entrypoint
+    :param app: object from 'app = Flask(__name__)' for a entrypoint.
+    Here an email insert in token's and back.
     """
     
     def __init__(self, app: type(app_)):
@@ -31,7 +32,7 @@ class EmailToGenerateToken:
     
     def generate_dumps_token(self, email: str) -> str:
         """
-        This is token's generate. In token inserting email.
+        This is token's generate. There an Email inserting  token's string.
         :param email: str. Is an user's email.
         :return: token: str
         """

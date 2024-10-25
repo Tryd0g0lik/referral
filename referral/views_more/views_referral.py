@@ -1,7 +1,10 @@
-from flask import (render_template, request)
+from flask import (render_template, request, jsonify)
 from flask_login import  login_required
 from referral.forms.form_referral import GetFormReferralCode
-
+from referral.interfaces.tokenization import EmailToGenerateToken
+from referral.models import Session
+from referral.models_more.model_referral import Referrals
+from referral.models_more.model_users import Users
 
 
 async def views_referrals(app_):
@@ -50,8 +53,34 @@ async def views_referrals(app_):
         message = "OK"
         form = GetFormReferralCode()
         if request.method == "POST" and form.validate_on_submit():
-            email = form.email.data
-            description = form.email.data
+            strBool = form.validator_register_email(form.email.data)
+            if type(strBool) == bool:
+                message="Your email address did not go checking!"
+                response = jsonify(
+                    message=message,
+                )
+                return response
+            
+            email = strBool[0:]
+            description = [d if d and len(d) > 0 else ''
+                           for d in form.description.data ]
+            
+            sess = Session()
+            try:
+                r = EmailToGenerateToken(app_)
+                referral_token = r.generate_dumps_token()
+                u = sess.query(Users).filter_by(email == email ).first()
+                ref = Referrals(u, referral_token)
+                ref.description = description
+                sess.add(ref)
+                sess.commit()
+            except Exception as e:
+                print(f"""[referral_add]: Something what wrong!
+Error => {e}""")
+            
+            finally:
+                sess.close()
+            
             
             """"
             generate_unique_referral_code

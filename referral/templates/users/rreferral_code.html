@@ -1,55 +1,56 @@
-<head><script defer src="/scripts/main-main-7d1480b15d8282bcddc1.js"></script><link href="/styles/style.css" rel="stylesheet"></head>{% extends "layout/basis.html" %}
+<head><script defer src="/scripts/main-main-0941e2676e6605316397.js"></script><link href="/styles/style.css" rel="stylesheet"></head>{% extends "layout/basis.html" %}
 
 {% if current_user and current_user.is_authenticated and
 current_user.is_authenticated() == True %}
-  {% block title %}
-    {% if current_user and current_user._UserLogin__user and
-    current_user._UserLogin__user.firstname %}
-      {{ current_user._UserLogin__user.firstname }} - referral code
-    {% else %}
-      Referral code
-    {% endif %}
-  {% endblock title %}
+{% block title %}
+{% if current_user and current_user._UserLogin__user and
+current_user._UserLogin__user.firstname %}
+{{ current_user._UserLogin__user.firstname }} - referral code
+{% else %}
+Referral code
+{% endif %}
+{% endblock title %}
 {% endif %}
 {% block header %}
-  {% if current_user and current_user._UserLogin__user and
-  current_user._UserLogin__user.firstname %}
-    Referral code from the {{ current_user._UserLogin__user.firstname| title }}
-  {% endif %}
+{% if current_user and current_user._UserLogin__user and
+current_user._UserLogin__user.firstname %}
+Referral code from the {{ current_user._UserLogin__user.firstname| title }}
+{% endif %}
 {% endblock header %}
 {% block mainRowContribute %}
 
-  {% if current_user and current_user.is_authenticated and
-  current_user.is_authenticated() == True %}
-    <h2> {{ title }} </h2>
+{% if current_user and current_user.is_authenticated and
+current_user.is_authenticated() == True %}
+<h2> {{ title }} </h2>
 
 
-    <div class="form">
-      <p>Custom content added to the login form.</p>
-      <form id="referral" method="post">
-        {{ form.csrf_token }} <!-- CSRF защита -->
-        <div class="form-group">
-          {{ form.email.label(class="form-check-label") }}
-          {{ form.email(class="form-control") }}
-          {% for error in form.email.errors %}
-          <div class="text-danger">{{ error }}</div>
-          {% endfor %}
-        </div>
-        <div class="form-group">
-          {{ form.description.label(class="form-check-label") }}
-          {{ form.description() }}
-          {% for error in form.description.errors %}
-          <div class="text-danger">{{ error }}</div>
-          {% endfor %}
-        </div>
-        {{ form.submit() }}
-      </form>
+<div class="form">
+
+  <p>Custom content added to the login form.</p>
+  <form id="referral" method="post">
+    {{ form.csrf_token }} <!-- CSRF защита -->
+    <div class="form-group">
+      {{ form.email.label(class="form-check-label") }}
+      {{ form.email(class="form-control") }}
+      {% for error in form.email.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
     </div>
+    <div class="form-group">
+      {{ form.description.label(class="form-check-label") }}
+      {{ form.description() }}
+      {% for error in form.description.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+    {{ form.submit() }}
+  </form>
+  </div>
 
-    {% if message and message != None %}
-    <div class="form-message">{{ message }}</div>
-    {% endif %}
-  {% else %}
-    <h2> Что-то не так - this is only marker</h2>
-  {% endif %}
+{% if message and message != None %}
+<div class="form-message">{{ message }}</div>
+{% endif %}
+{% else %}
+<h2> Что-то не так - this is only marker</h2>
+{% endif %}
 {% endblock mainRowContribute %}

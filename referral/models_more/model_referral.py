@@ -1,31 +1,29 @@
 from datetime import datetime
-from typing import Any, Callable, Dict
+from typing import Any, Dict
 
 import sqlalchemy as sq
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, sessionmaker
-from wtforms import StringField
+from sqlalchemy.orm import relationship
 
-from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_DB,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_PORT,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_USER)
-from referral.flasker import bcrypt
+from referral.flasker import app_
+from referral.interfaces.tokenization import EmailToGenerateToken
 from referral.models_more.model_init import Base
-from referral.tokenization import (generate_unique_referral_code,
-                                   generate_unique_token)
-
+e = EmailToGenerateToken(app_)
+# cascade="all, delete-orphan",
 
 class Referrals(Base):
     __tablename__ = "referrals"
 
     id = sq.Column(sq.Integer, primary_key=True)
-    user_id = sq.Column(sq.Integer, ForeignKey("users.id"), unique=True)
+    user_id = sq.Column(
+        sq.Integer,
+        sq.ForeignKey("users.id"),
+        unique=True,
+        nullable=False
+    )
     email = relationship(
         "Users",
-        backref="referral",
-        cascade="all, delete-orphan",
+        backref="referral"
     )
     description = sq.Column("description", sq.String(150), nullable=False)
     referral_code = sq.Column(
@@ -38,7 +36,7 @@ class Referrals(Base):
     def __init__(self, user: Dict[int, object], **kw: Any):
         super().__init__(**kw)
         self.user_id = user["id"]
-        self.referral_code = generate_unique_referral_code()
+        self.referral_code = e.generate_dumps_token(user["email"])
 
     def __str__(self):
         return f"User email: {self.email} Description: "
