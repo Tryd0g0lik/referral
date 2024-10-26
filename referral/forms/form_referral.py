@@ -12,15 +12,15 @@ class GetFormReferralCode(FlaskForm):
     :param 'description' This a description into the range of 0 to 150 symbol.
     It's a marker for a referral-code.
     """
-
-    email = StringField(
-        "email",
-        validators=[
-            validators.InputRequired(),
-            validators.Email(),
-            validators.DataRequired(),
-        ],
-    )
+    #
+    # email = StringField(
+    #     "email",
+    #     validators=[
+    #         validators.InputRequired(),
+    #         validators.Email(),
+    #         validators.DataRequired(),
+    #     ],
+    # )
     description = StringField(
         "Описание",
         validators=[
@@ -32,10 +32,11 @@ class GetFormReferralCode(FlaskForm):
     )
     submit = SubmitField("Make", render_kw={"class": "btn btn-secondary"})
     
-    def validator_register_email(self, email: str):
+    def validator_register_email(self, email: [dict, object]):
         """
         This is a email's validator.
-        :param email: str. Min. Length is 7 symbols.
+        :param email: [dict, object]. 'main = {"data": "your@mail.ru"}'
+        Min. Length is 7 symbols.
         :return: str if is all Ok and False if what wrong.
         """
         strBool = validate_emails(email)

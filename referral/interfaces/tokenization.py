@@ -37,6 +37,17 @@ class EmailToGenerateToken:
         :return: token: str
         """
         return self.__s.dumps(email, salt="email-confirm")
+    def generate_dumps_token_len(self, email: str, length=150) -> str:
+        """
+        This is token's generate. There an Email inserting  token's string.
+        :param email: str. Is an user's email.
+        :param length: int. Default 150.
+        :return: token: str
+        """
+        t = self.__s.dumps(email, salt="email-confirm")
+        if length > 150:
+            length = 150
+        return ''.join(t[ind] for ind in range(0, length))
     
     def set_load_token(self, token: str) -> None:
         """

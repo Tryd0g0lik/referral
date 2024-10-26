@@ -1,9 +1,12 @@
 """Views of profile"""
-from flask import (render_template, session)
+from flask import (render_template, session, request)
 from flask_login import login_required
 from referral.forms.form_login import GetFormAuthorization
 # LOCAL LIB
 from referral.flasker import app_type
+from referral.models import Session
+from referral.models_more.model_referral import Referrals
+
 
 async def views_profiles(app_) -> app_type:
     """
@@ -22,12 +25,25 @@ async def views_profiles(app_) -> app_type:
     async def profiles() -> str:
         """Opening a page for the user authorized
         This present a list of referral-code"""
-        message = "Profile"
+        
+        message = [m.args['message'] if m.args['message'] else "Profile" for
+                   m in [request]][0]
+        
         GetFormAuthorization()
-    
+        sess = Session()
+        
+        referral_obj_list = sess.query(Referrals).filter(id != 0).all()
+        referral_list = []
+        if len(referral_obj_list) > 0:
+            referral_list = [r.__dict__ for r in referral_obj_list]
+            return render_template(
+                "users/profile.html", title="Dashboard", message=message,
+                contain=referral_list
+            )
         return render_template(
             "users/profile.html", title="Dashboard", message=message
         )
+
     async def exit():
         # clear session
         # @app_.before_request

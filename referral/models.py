@@ -4,11 +4,13 @@ import sqlalchemy as sq
 from sqlalchemy.orm import sessionmaker
 from referral.flasker import app_
 from referral.models_more.model_init import Base
+# Below, two lines be not remove
+from referral.models_more.model_referral import Referrals
+from referral.models_more.model_users import Users
 
 DSN: str = app_.config["SQLALCHEMY_DATABASE_URI"]
 engine = sq.create_engine(DSN, pool_pre_ping=True)
 Session = sessionmaker(bind=engine)
-
 
 def create_tables(engines):
     try:

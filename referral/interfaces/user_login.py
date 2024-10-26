@@ -2,8 +2,7 @@
 This is a description of user_login.
 """
 
-from referral.models import Session
-from referral.models_more.model_users import Users
+from referral.models import Session, Users
 
 session = Session()
 

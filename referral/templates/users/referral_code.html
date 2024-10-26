@@ -1,4 +1,4 @@
-<head><script defer src="/scripts/main-main-0941e2676e6605316397.js"></script><link href="/styles/style.css" rel="stylesheet"></head>{% extends "layout/basis.html" %}
+{% extends "layout/basis.html" %}
 
 {% if current_user and current_user.is_authenticated and
 current_user.is_authenticated() == True %}
@@ -27,7 +27,7 @@ current_user.is_authenticated() == True %}
 <div class="form">
 
   <p>Custom content added to the login form.</p>
-  <form id="referral" method="post">
+  <form id="referral" method="post" action="{{ url_for('referral_add') }}">
     {{ form.csrf_token }} <!-- CSRF защита -->
     <div class="form-group">
       {{ form.email.label(class="form-check-label") }}

@@ -8,8 +8,10 @@ import asyncio as asy
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from referral.flasker import app_, login_manager
 
-from .models import Session
-from .models_more.model_users import Users
+from .models import Session, Users
+
+# from .models_more.model_users import Users
+
 from .views_more.views_account import views_accouts
 from .views_more.views_profile import views_profiles
 from .views_more.views_referral import views_referrals

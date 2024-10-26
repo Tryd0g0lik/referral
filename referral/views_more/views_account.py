@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from cfgv import ValidationError
 from flask import (flash, redirect, render_template, request,  # jsonify,
-                   url_for)
+                   url_for, make_response)
 from flask_login import login_user
 from itsdangerous import URLSafeTimedSerializer
 # URL-TOKEN
@@ -18,9 +18,8 @@ from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from referral.flasker import app_type
 from referral.forms.form_registration import GetFormRegistration
 from referral.forms.form_login import GetFormAuthorization
-from referral.models import Session
-from referral.models_more.model_users import Users
-# from referral.postman.sender import send_activation_email
+from referral.models import Session, Users
+
 
 
 
@@ -154,45 +153,59 @@ async def views_accouts(app_) -> app_type:
         message = None
         if request.method == "POST":
             if form_loginin and form_loginin.validate_on_submit():
-                # Received data for a authorization
-                email = form_loginin.email.data
-                password = form_loginin.password.data
-                user = sess.query(Users).filter_by(email=email).first()
-                
-                """
-                    На каком этапе лучше создавать хеш-пароль???
-                    Хешировать email или нет???
-                """
-                
-                # Below comparing and checking the email and password
-                """
-                    Сравнение проводить лучше в состоянии хеша или
-                    декодировать пароль, затем сравнивать???
-                """
-                if (user.email == email) and (user.check_password(password)):
-                    # Make data to the profiles page
-                    userlogin = UserLogin()
-                    userlogin.create(user)
-                    userlogin.is_authenticated()
-                    userlogin.is_anonymous()
-                    userlogin.is_active()
-                    userlogin.get_id()
-                    login_user(userlogin)
-                    # Change data from db of the single user
-                    user.is_active = True
-                    sess.commit()
-                    sess.close()
+                try:
+                    # Received data for a authorization
+                    email = form_loginin.email.data
+                    password = form_loginin.password.data
+                    user = sess.query(Users).filter_by(email=email).first()
+                    
+                    """
+                        На каком этапе лучше создавать хеш-пароль???
+                        Хешировать email или нет???
+                    """
+                    
+                    # Below comparing and checking the email and password
+                    """
+                        Сравнение проводить лучше в состоянии хеша или
+                        декодировать пароль, затем сравнивать???
+                    """
+                    if (user.email == email) and (user.check_password(password)):
+                        # Make data to the profiles page
+                        userlogin = UserLogin()
+                        userlogin.create(user)
+                        userlogin.is_authenticated()
+                        userlogin.is_anonymous()
+                        userlogin.is_active()
+                        userlogin.get_id()
+                        login_user(userlogin)
+                        # Change data from db of the single user
+                        user.is_active = True
+                        
+                        # COOKIE
+                        resp_cookie = make_response('Cookie is set')
+                        resp_cookie.set_cookie('user_token',
+                                               user.activation_token)
+                        sess.commit()
+                        sess.close()
+                        message = "login successful!"
+                        return redirect(
+                            url_for("profiles",
+                                    title="Profile",
+                                    message=message,
+                                    resp_cookie=resp_cookie
+                                    )
+                        )
+                    
+                except Exception as e:
                     message = "Invalid username or password"
-                    return redirect(
-                        url_for("profiles", title="Profile", message=message)
+                    return render_template(
+                        "users/login.html",
+                        title="Авторизация",
+                        form=form_loginin,
+                        message=message,
                     )
-                sess.close()
-                return render_template(
-                    "users/login.html",
-                    title="Авторизация",
-                    form=form_loginin,
-                    message="login successful!",
-                )
+                finally:
+                    sess.close()
             elif not form_loginin.validate_on_submit():
                 print(f"[login]: Not validate_on_submit => {form_loginin.errors}")
         

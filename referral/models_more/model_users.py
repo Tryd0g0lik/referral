@@ -5,7 +5,7 @@ import sqlalchemy as sq
 from referral.flasker import bcrypt
 from referral.models_more.model_init import Base
 
-
+# def postman_users(Base):
 class Users(Base):
     """This is a model Users of table in db"""
 
@@ -33,3 +33,5 @@ class Users(Base):
     def check_password(self, password: str):
         """Passwords checking"""
         return bcrypt.check_password_hash(self.password, password)
+
+    # return Users
