@@ -1,10 +1,9 @@
 from flask import (render_template, request, jsonify, redirect, url_for)
 from flask_login import  login_required
 from referral.forms.form_referral import GetFormReferralCode
+from referral.interfaces.files import receive_js_file
 # from referral.interfaces.tokenization import EmailToGenerateToken
 from referral.models import Session, Users, Referrals
-
-
 
 
 async def views_referrals(app_):
@@ -20,6 +19,9 @@ async def views_referrals(app_):
         """This present a list of referral-code"""
         message = "OK"
         form_referral = GetFormReferralCode()
+
+        # Below, receive the JS file name.
+        js_file_name = receive_js_file()
         if request.method == "GET":
             pass
         
@@ -28,6 +30,7 @@ async def views_referrals(app_):
             title="Создать referral code",
             form=form_referral,
             message=message,
+            js_file_name=js_file_name
         )
 
     @app_.route(
@@ -52,7 +55,8 @@ async def views_referrals(app_):
         """This present a list of referral-code
         При авторизации надо в куки разместить ключ пользователя.
         """
-
+        # Below, receive the JS file name.
+        js_file_name = receive_js_file()
         message = "OK"
         form = GetFormReferralCode()
         if request.method == "POST" and form.validate_on_submit():
@@ -104,6 +108,7 @@ Error => {e}""")
             title="Создать referral code",
             form=form,
             message=message,
+            js_file_name=js_file_name
         )
     
     @app_.route(

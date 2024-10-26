@@ -29,22 +29,18 @@ async def views_profiles(app_) -> app_type:
         """Opening a page for the user authorized
         This present a list of referral-code"""
         
-        message = [m.args['message'] if m.args['message'] else "Profile" for
-                   m in [request]][0]
+        message = [m.args['message'] if len(m.args) > 0 and m.args['message']
+                   else "Profile" for m in [request]][0]
         
         GetFormAuthorization()
         sess = Session()
-        
+        # Below, receive the JS file name.
+        js_file_name = receive_js_file()
         referral_obj_list = sess.query(Referrals).filter(id != 0).all()
         referral_list = []
         if len(referral_obj_list) > 0:
             referral_list = [r.__dict__ for r in referral_obj_list]
             web_host = request.host_url
-            
-
-            # Below, receive the JS file name.
-            js_file_name = receive_js_file()
-            
             
             return render_template(
                 "users/profile.html", title="Dashboard", message=message,
@@ -53,7 +49,10 @@ async def views_profiles(app_) -> app_type:
                 js_file_name= js_file_name
             )
         return render_template(
-            "users/profile.html", title="Dashboard", message=message
+            "users/profile.html",
+            title="Dashboard",
+            message=message,
+            js_file_name=js_file_name
         )
 
     async def exit():
