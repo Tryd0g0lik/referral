@@ -72,6 +72,7 @@ async def views_referrals(app_):
             try:
                 # r = EmailToGenerateToken(app_)
                 # referral_token = r.generate_dumps_token(email)
+                email = ''
                 u = sess.query(Users).filter_by(email = email ).first()
                 if u.email == email:
                     message = "Данный email уже был"

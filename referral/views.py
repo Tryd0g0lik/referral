@@ -7,6 +7,7 @@ from flask import session as s
 import asyncio as asy
 from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from referral.flasker import app_, login_manager
+from .interfaces.files import receive_js_file
 
 from .models import Session, Users
 
@@ -76,7 +77,11 @@ async def app_router() -> str:
             # Преобразование данных формы в словарь
             # params = request.form.to_dist()
             pass
-        return render_template("index.html", message=None)
+            # Below, receive the JS file name.
+            js_file_name = receive_js_file()
+        return render_template("index.html",
+                               message=None,
+                               js_file_name=js_file_name)
 
     return app_
 

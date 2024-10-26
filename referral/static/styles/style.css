@@ -13,7 +13,10 @@ width:250px;
 }
 
 main h2,
- div.row > div {
+div.row>div {
   padding-left: 50px;
-  }
+}
 
+.reff-view>div {
+  display: inline-block;
+}

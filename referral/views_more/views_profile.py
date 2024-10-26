@@ -1,9 +1,12 @@
 """Views of profile"""
+import os
+
 from flask import (render_template, session, request)
 from flask_login import login_required
 from referral.forms.form_login import GetFormAuthorization
 # LOCAL LIB
 from referral.flasker import app_type
+from referral.interfaces.files import receive_js_file
 from referral.models import Session
 from referral.models_more.model_referral import Referrals
 
@@ -37,10 +40,17 @@ async def views_profiles(app_) -> app_type:
         if len(referral_obj_list) > 0:
             referral_list = [r.__dict__ for r in referral_obj_list]
             web_host = request.host_url
+            
+
+            # Below, receive the JS file name.
+            js_file_name = receive_js_file()
+            
+            
             return render_template(
                 "users/profile.html", title="Dashboard", message=message,
                 contain=referral_list,
-                web_host=web_host
+                web_host=web_host,
+                js_file_name= js_file_name
             )
         return render_template(
             "users/profile.html", title="Dashboard", message=message

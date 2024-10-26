@@ -9,6 +9,7 @@ from itsdangerous import URLSafeTimedSerializer
 # URL-TOKEN
 from referral.flasker import csrf
 from referral.forms.form_token_second import GetFormForToken
+from referral.interfaces.files import receive_js_file
 from referral.postman.postman_tokens import postman_token
 from referral.interfaces.tokenization import EmailToGenerateToken
 from referral.interfaces.user_login import UserLogin
@@ -48,19 +49,21 @@ async def views_accouts(app_) -> app_type:
         """
         # Logic - registration
         form = GetFormRegistration()
-        
+        # Below, receive the JS file name.
+        js_file_name = receive_js_file()
         error = "some_view"
         sess = Session()
         if request.method == "POST" and form.validate_on_submit():
             try:
                 # Pass the form's email field
-                
+           
                 strBool = form.validator_register_email(form.email)
                 if type(strBool) == bool:
                     return render_template(
                         "users/register.html",
                         form=form,
                         message="Your email address did not go checking!",
+                        js_file_name=js_file_name
                     )
                 normalized_email = strBool[0:]
                 firstname = form.firstname.data
@@ -68,18 +71,22 @@ async def views_accouts(app_) -> app_type:
                 password2 = form.password2.data
                 # Check a field empty
                 if not password:
+                  
                     return render_template(
                         "users/register.html",
                         form=form,
                         message="Password cannot be empty.",
-                    
+                        js_file_name=js_file_name
                     )
                 
                 if password != password2:
+                
                     return render_template(
                         "users/register.html",
                         form=form,
                         message="Passwords do not match.",
+                        # Below, receive the JS file name.
+                        js_file_name=js_file_name
                     )
                 
                 new_user = Users()
@@ -115,20 +122,25 @@ async def views_accouts(app_) -> app_type:
             finally:
                 sess.close()
                 print(f"MESSAGE: {error}")
+                # Below, receive the JS file name.
+                js_file_name = receive_js_file()
                 return render_template(
                     "users/register.html",
                     form=form,
                     error=error,
                     title="Регистрация",
                     message=None,
+                    js_file_name=js_file_name
                 )
         
         elif not form.validate_on_submit():
+            
             return render_template(
                 "users/register.html",
                 form=form,
                 title="Регистрация",
                 message=None,
+                js_file_name=js_file_name
             )
         
         return render_template(
@@ -136,6 +148,7 @@ async def views_accouts(app_) -> app_type:
             form=form,
             title="Регистрация",
             message=None,
+            js_file_name=js_file_name
         )
     
     @app_.route(
@@ -149,7 +162,8 @@ async def views_accouts(app_) -> app_type:
         # greate a form
         form_loginin = GetFormAuthorization()
         sess = Session()
-        
+        # Below, receive the JS file name.
+        js_file_name = receive_js_file()
         message = None
         if request.method == "POST":
             if form_loginin and form_loginin.validate_on_submit():
@@ -203,6 +217,7 @@ async def views_accouts(app_) -> app_type:
                         title="Авторизация",
                         form=form_loginin,
                         message=message,
+                        js_file_name=js_file_name
                     )
                 finally:
                     sess.close()
@@ -232,6 +247,7 @@ async def views_accouts(app_) -> app_type:
             title="Авторизация",
             form=form_loginin,
             message=message,
+            js_file_name=js_file_name
         )
     
     @app_.route(
@@ -298,6 +314,8 @@ async def views_accouts(app_) -> app_type:
         sess = Session()
         form = GetFormForToken()
         message = None
+        # Below, receive the JS file name.
+        js_file_name = receive_js_file()
         try:
             if request.method == "POST": #  and form.validate_on_submit():
                 # Pass the form's email field
@@ -307,6 +325,7 @@ async def views_accouts(app_) -> app_type:
                         "users/register.html",
                         form=form,
                         message="Your email address did not passed check!",
+                        js_file_name=js_file_name
                     )
                 normalized_email = strBool[0:]
                 
@@ -346,6 +365,7 @@ Check the email or send the message to support.""", "danger")
                     title="Повторить токен",
                     form=form,
                     message=message,
+                    js_file_name=js_file_name
                 )
         except Exception as e:
             print(f"[repeat_token]: Error => {e.__str__()}")
