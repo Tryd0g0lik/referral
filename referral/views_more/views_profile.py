@@ -36,9 +36,11 @@ async def views_profiles(app_) -> app_type:
         referral_list = []
         if len(referral_obj_list) > 0:
             referral_list = [r.__dict__ for r in referral_obj_list]
+            web_host = request.host_url
             return render_template(
                 "users/profile.html", title="Dashboard", message=message,
-                contain=referral_list
+                contain=referral_list,
+                web_host=web_host
             )
         return render_template(
             "users/profile.html", title="Dashboard", message=message

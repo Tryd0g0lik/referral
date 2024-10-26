@@ -1,4 +1,4 @@
-<head><script defer src="/scripts/main-main-cbe52b235e5ec8262971.js"></script><link href="/styles/style.css" rel="stylesheet"></head>{% extends 'layout/basis.html' %}
+<head><script defer src="/scripts/main-main-464eb9b7472b03017b23.js"></script><link href="/styles/style.css" rel="stylesheet"></head>{% extends 'layout/basis.html' %}
 
 {% block title %}{{ title }}{% endblock title %}
 {% block header %} {{ title }} {% endblock header %}
@@ -13,7 +13,7 @@
         <b>{{ r.description}}:</b>
       </div>
       <div>
-        <a href="{{ r.referral_code }}"> {{ r.referral_code}}</a>
+        <a href="{{ web_host }}/{{ r.referral_code }}">{{ web_host }}/{{ r.referral_code}}</a>
       </div>
     </li>
     {% endfor %}
