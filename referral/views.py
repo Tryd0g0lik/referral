@@ -67,6 +67,8 @@ async def app_router() -> str:
         Here is a main page uploading
         :return:
         """
+        # Below, receive the JS file name.
+        js_file_name = receive_js_file()
         if request.method == "GET":
             # Удаляем users которые просрочили подтверждение email через
             # ссылку-токен на почте.

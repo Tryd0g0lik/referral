@@ -19,7 +19,7 @@ async def views_profiles(app_) -> app_type:
     """
     # PROFILE
     @app_.route(
-        "/profile",
+        "referral_form",
         methods=[
             "GET",
         ],
@@ -43,7 +43,7 @@ async def views_profiles(app_) -> app_type:
             web_host = request.host_url
             
             return render_template(
-                "users/profile.html", title="Dashboard", message=message,
+                "usersreferral_form.html", title="Dashboard", message=message,
                 contain=referral_list,
                 web_host=web_host,
                 js_file_name= js_file_name

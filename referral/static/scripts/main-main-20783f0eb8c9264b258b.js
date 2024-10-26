@@ -7,6 +7,7 @@
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/index.ts":
@@ -15,8 +16,7 @@
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _styles_style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./styles/style.css */ \"./src/styles/style.css\");\n/* harmony import */ var _scripts_listener_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scripts/listener.ts */ \"./src/scripts/listener.ts\");\n/* harmony import */ var _scripts_listener_ts__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_scripts_listener_ts__WEBPACK_IMPORTED_MODULE_1__);\n\n\nconsole.log(\"Hallo world!\");\n\n//# sourceURL=webpack://frontend-Flask-account/./src/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _styles_style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./styles/style.css */ \"./src/styles/style.css\");\n/* harmony import */ var _scripts_listener_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scripts/listener.ts */ \"./src/scripts/listener.ts\");\n\n\nconsole.log(\"Hallo world!\");\n\n//# sourceURL=webpack://frontend-Flask-account/./src/index.ts?");
 
 /***/ }),
 
@@ -24,9 +24,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _sty
 /*!*********************************!*\
   !*** ./src/scripts/listener.ts ***!
   \*********************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("document.addEventListener(\"DOMContentLoaded\", () => {\n  //   /* сделать прослушку для к \"#submit-repeat\". Через \"fetch\"\n  //   запросить \"/repeat_token\" и все. Даьше заработает код python из\n  //   \"referral/views_more/views_account.py\"\n  //   */\n  // sessionStorage.clear()\n  console.log(\"Hallo world!\");\n});\n\n//# sourceURL=webpack://frontend-Flask-account/./src/scripts/listener.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\ndocument.addEventListener(\"DOMContentLoaded\", () => {\n  //   /* сделать прослушку для к \"#submit-repeat\". Через \"fetch\"\n  //   запросить \"/repeat_token\" и все. Даьше заработает код python из\n  //   \"referral/views_more/views_account.py\"\n  //   */\n  // sessionStorage.clear()\n  // const cookie = checkCookieExists('user_token')\n  // console.log(`Hallo world!: ${cookie}`)\n  const cookie_arr = location.href.split('resp_cookie');\n  const cookie_leng = cookie_arr.length;\n  const cook_str = cookie_arr[cookie_leng - 1].slice(1);\n  console.log(\"ddddddddd\" + cook_str);\n});\n\n\n//# sourceURL=webpack://frontend-Flask-account/./src/scripts/listener.ts?");
 
 /***/ }),
 
@@ -36,7 +36,6 @@ eval("document.addEventListener(\"DOMContentLoaded\", () => {\n  //   /* сде�
   \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://frontend-Flask-account/./src/styles/style.css?");
 
 /***/ })
@@ -68,35 +67,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
