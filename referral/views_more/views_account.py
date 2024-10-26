@@ -194,7 +194,8 @@ async def views_accouts(app_) -> app_type:
                         login_user(userlogin)
                         # Change data from db of the single user
                         user.is_active = True
-                        for_cookie_data = user.activation_token
+                        # for_cookie_data = user.activation_token
+                        data_number = user.id
                         # COOKIE
                         # httponly=True
                         # resp_cookie = make_response('Cookie is set')
@@ -208,6 +209,7 @@ async def views_accouts(app_) -> app_type:
                             url_for("profiles",
                                     title="Profile",
                                     message=message,
+                                    data_number=data_number
                                     )
                         )
                     

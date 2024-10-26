@@ -16,14 +16,16 @@ from .models import Session, Users
 from .views_more.views_account import views_accouts
 from .views_more.views_profile import views_profiles
 from .views_more.views_referral import views_referrals
+from .views_more.views_service import views_services
 
 
 async def app_router() -> str:
     """Total function"""
     await asy.gather(
-    asy.create_task(views_accouts(app_)),
-    asy.create_task(views_profiles(app_)),
-    asy.create_task(views_referrals(app_)),
+        asy.create_task(views_accouts(app_)),
+        asy.create_task(views_profiles(app_)),
+        asy.create_task(views_referrals(app_)),
+        asy.create_task(views_services(app_)),
     )
     
     def delete_old_users():

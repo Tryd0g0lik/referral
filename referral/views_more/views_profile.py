@@ -19,7 +19,7 @@ async def views_profiles(app_) -> app_type:
     """
     # PROFILE
     @app_.route(
-        "referral_form",
+        "/profile",
         methods=[
             "GET",
         ],
@@ -34,19 +34,23 @@ async def views_profiles(app_) -> app_type:
         
         GetFormAuthorization()
         sess = Session()
+        
         # Below, receive the JS file name.
         js_file_name = receive_js_file()
+        
+        # Below, change the conditions 'referral_obj_list' value. !!!!!
         referral_obj_list = sess.query(Referrals).filter(id != 0).all()
-        referral_list = []
+        
         if len(referral_obj_list) > 0:
             referral_list = [r.__dict__ for r in referral_obj_list]
             web_host = request.host_url
             
             return render_template(
-                "usersreferral_form.html", title="Dashboard", message=message,
+                "users/profile.html", title="Dashboard", message=message,
                 contain=referral_list,
                 web_host=web_host,
                 js_file_name= js_file_name
+                
             )
         return render_template(
             "users/profile.html",

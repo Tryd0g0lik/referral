@@ -8,6 +8,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
+from flask_cors import CORS
 
 from dotenv_ import (EMAIL_HOST, EMAIL_PORT, MAIL_DEFAULT_SENDER,
                      MAIL_PASSWORD, MAIL_USE_TLS, MAIL_USERNAME,
@@ -16,7 +17,11 @@ from dotenv_ import (EMAIL_HOST, EMAIL_PORT, MAIL_DEFAULT_SENDER,
                      PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
                      PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD,
                      PROJECT_REFERRAL_SETTING_POSTGRES_PORT,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_USER)
+                     PROJECT_REFERRAL_SETTING_POSTGRES_USER,
+                     PROJECT_REFERRAL_HOST_TO_BACKEND,
+                     PROJECT_REFERRAL_PROTOCOL_TO_BACKEND,
+                     PROJECT_REFERRAL_PORT_TO_BACKEND
+                     )
 
 
 def create_flask() -> dict:
@@ -58,6 +63,10 @@ def create_flask() -> dict:
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = "login"
+    host = f"{PROJECT_REFERRAL_PROTOCOL_TO_BACKEND}://{PROJECT_REFERRAL_HOST_TO_BACKEND}:{PROJECT_REFERRAL_PORT_TO_BACKEND}"
+    # CORS
+    CORS(app, resources={r"/api/v1/*": {"origins": host}})
+
     
     # clear session
     # @app.before_request
