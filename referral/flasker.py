@@ -63,9 +63,10 @@ def create_flask() -> dict:
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = "login"
-    host = f"{PROJECT_REFERRAL_PROTOCOL_TO_BACKEND}://{PROJECT_REFERRAL_HOST_TO_BACKEND}:{PROJECT_REFERRAL_PORT_TO_BACKEND}"
-    # CORS
-    CORS(app, resources={r"/api/v1/*": {"origins": host}})
+    # host = f"{PROJECT_REFERRAL_PROTOCOL_TO_BACKEND}://{PROJECT_REFERRAL_HOST_TO_BACKEND}:{PROJECT_REFERRAL_PORT_TO_BACKEND}"
+    host = 'http://127.0.0.1:5000'
+    # CORS , resources={r"/api/v1/*": {"origins": str(host)}}
+    # cors = CORS(app)
 
     
     # clear session
@@ -79,6 +80,7 @@ def create_flask() -> dict:
         "csrf": csrf,
         "bcrypt": bcrypt,
         "login_manager": login_manager,
+        
     }
 
 

@@ -1,4 +1,5 @@
-from flask import (render_template, request, jsonify, redirect, url_for)
+from flask import (render_template, request, jsonify, redirect,
+                   url_for)
 from flask_login import  login_required
 from referral.forms.form_referral import GetFormReferralCode
 from referral.interfaces.files import receive_js_file

@@ -4,6 +4,7 @@ import os
 from flask import (render_template, session, request)
 from flask_login import login_required
 from referral.forms.form_login import GetFormAuthorization
+from flask_wtf.csrf import generate_csrf
 # LOCAL LIB
 from referral.flasker import app_type
 from referral.interfaces.files import receive_js_file
@@ -34,7 +35,7 @@ async def views_profiles(app_) -> app_type:
         
         GetFormAuthorization()
         sess = Session()
-        
+        csrf_token = generate_csrf()
         # Below, receive the JS file name.
         js_file_name = receive_js_file()
         
@@ -49,14 +50,15 @@ async def views_profiles(app_) -> app_type:
                 "users/profile.html", title="Dashboard", message=message,
                 contain=referral_list,
                 web_host=web_host,
-                js_file_name= js_file_name
-                
+                js_file_name= js_file_name,
+                csrf_token=csrf_token
             )
         return render_template(
             "users/profile.html",
             title="Dashboard",
             message=message,
-            js_file_name=js_file_name
+            js_file_name=js_file_name,
+            csrf_token=csrf_token
         )
 
     async def exit():

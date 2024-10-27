@@ -8,9 +8,13 @@ lang="ru"
   {{super()}}
   <link rel="stylesheet" href="{{url_for('.static', filename='styles/style.css')}}">
 {% endblock %}
-
+{% block metas %}
 <meta name="viewpost" content="width-device-width, initial-scale=1,
- shrink-to-fit-no">
+    shrink-to-fit-no">
+  {% if csrf_token %}
+  <!-- meta name="csrf-token" content="{ { csrf_token } }" -->
+  {% endif %}
+  {% endblock metas %}
 <title>{% block title %}Главная{% endblock title %} - Account</title>
 
 <!-- Get the flash message -->
@@ -99,4 +103,4 @@ lang="ru"
 
 {% endblock body %}
 
-<!--<script defer src="/scripts/main-main-cd56827b1ced93c9d06f.js"></script><link href="/styles/style.css" rel="stylesheet"></head>-->
+<!--<script defer src="/scripts/main-main-398f8174ddc7f3203eea.js"></script><link href="/styles/style.css" rel="stylesheet"></head>-->

@@ -5,7 +5,7 @@ from cfgv import ValidationError
 from flask import (flash, redirect, render_template, request,  # jsonify,
                    url_for, make_response)
 from flask_login import login_user
-from itsdangerous import URLSafeTimedSerializer
+
 # URL-TOKEN
 from referral.flasker import csrf
 from referral.forms.form_token_second import GetFormForToken
@@ -202,14 +202,17 @@ async def views_accouts(app_) -> app_type:
                         # resp_cookie.set_cookie('user_token',
                         #                        user.activation_token,
                         #                        )
+                        
+                        
                         sess.commit()
                         sess.close()
                         message = "login successful!"
+                        
                         return redirect(
                             url_for("profiles",
                                     title="Profile",
                                     message=message,
-                                    data_number=data_number
+                                    data_number=data_number,
                                     )
                         )
                     
