@@ -55,6 +55,10 @@ async def views_services(app_) -> app_type:
         methods=["GET"]
     )
     def get_csrf_token():
+        """
+        This CSRF-key returning of function by 'GET' request/
+        :return: JSON '{"csrf_token": < csrf_key >}'
+        """
         csrf_ = generate_csrf()
         
         return jsonify({"csrf_token": csrf_}), 200
