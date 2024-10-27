@@ -1,28 +1,27 @@
 import json
 
-from flask import (render_template, request, jsonify, redirect, url_for,
-                   Response, make_response)
+from flask import (request, jsonify)
 from flask_login import login_required
 from flask_wtf.csrf import generate_csrf
 
 from referral.flasker import app_type
-from referral.interfaces.corser import _corsify_actual_response, \
-    _build_cors_preflight_response
-from flask_wtf import csrf
-from referral.models import Session, Users, Referrals
-from flask_cors import cross_origin
+from referral.interfaces.corser import _build_cors_preflight_response
+from referral.models import Session, Users
+
 async def views_services(app_) -> app_type:
     
     @app_.route(
         '/api/v1/token/get',
         methods=["OPTIONS", "POST"]
-    ) # /<string:user_id>
+    )
     @login_required
     async def get_token():
-        
+        """
+        This a function return 'activation_token' from db.
+        :return: JSON response which  has a  '{"user_token": < user_token >}'
+        """
         
         if request.method == "OPTIONS":
-            
             return _build_cors_preflight_response()
 
         if request.method == "POST":
@@ -46,16 +45,7 @@ async def views_services(app_) -> app_type:
                         resp
                     ), 201
                 
-                # response = Response(
-                #     response=json.dumps({"user_token": user_token}),
-                #     status=200,
-                #     mimetype='application/json'
-                # )
-                return data_json # _corsify_actual_response(response)
-                # return {
-                #     "data": resp,
-                #     "status": 203
-                # }
+                return data_json
             else:
                 return jsonify({"message": "Not OK."}), 400
         return jsonify({"message": "Not OK."}), 400
