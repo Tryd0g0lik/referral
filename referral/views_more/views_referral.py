@@ -75,8 +75,6 @@ async def views_referrals(app_):
             
             sess = Session()
             try:
-                # r = EmailToGenerateToken(app_)
-                # referral_token = r.generate_dumps_token(email)
                 email = ''
                 u = sess.query(Users).filter_by(email = email ).first()
                 if u.email == email:
