@@ -29,7 +29,7 @@ async def views_referrals(app_):
         """This present a list of referral-code"""
         message = "OK"
         form_referral = GetFormReferralCode()
-
+        
         # Below, receive the JS file name.
         js_file_name = receive_pathname_js_file()
         if request.method == "GET":
@@ -60,6 +60,7 @@ async def views_referrals(app_):
         message = "OK"
         form = GetFormReferralCode()
         if request.method == "POST" and form.validate_on_submit():
+            """Descript receive for referrals code """
             # strBool = form.validator_register_email(form.email)
             # if type(strBool) == bool:
             #     message="Your email address did not go checking!"
@@ -69,6 +70,7 @@ async def views_referrals(app_):
             #     return response
             #
             # email = strBool[0:]
+            
             description = [
                 d.data if d and len(d.data) > 0 else "" for d in [form.description]
             ]
