@@ -1,7 +1,8 @@
+"""
+Flask form for page registration
+"""
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, validators
-
-from referral.forms.form_registration import GetFormRegistration
+from wtforms import (StringField, SubmitField, validators)
 
 
 class GetFormAuthorization(FlaskForm):

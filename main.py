@@ -11,9 +11,9 @@ async def main():
     app.run(debug=True)
     return app
 
+
 if __name__ == "__main__":
     asyncio.run(main())
-    
-    
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

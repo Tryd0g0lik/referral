@@ -1,6 +1,8 @@
 [MESSAGES CONTROL]
 disable=
-    R0903
+    R0903,
+    W0718,
+    R1705
 ignore-path=
     project_root.settings.py
 # Максимальная глубина наследования

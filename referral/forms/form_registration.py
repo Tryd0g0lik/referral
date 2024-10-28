@@ -1,8 +1,9 @@
 """
 Flask form for page registration
 """
+
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField, SubmitField, validators
+from wtforms import (BooleanField, StringField, SubmitField, validators)
 
 from referral.forms.validators import validate_emails
 
@@ -59,9 +60,9 @@ class GetFormRegistration(FlaskForm):
 
     def validator_register_email(self, email: str) -> [str, bool]:
         """
-          This is a email's validator.
-          :param email: str. Min. Length is 7 symbols.
-          :return: str if is all Ok and False if what wrong.
-          """
+        This is a email's validator.
+        :param email: str. Min. Length is 7 symbols.
+        :return: str if is all Ok and False if what wrong.
+        """
         strBool = validate_emails(email)
         return strBool

@@ -1,6 +1,7 @@
 from cfgv import ValidationError
 from email_validator import EmailNotValidError, validate_email
 
+
 def validate_emails(email) -> [str, bool]:
     """
     This is a email's validator.
@@ -8,9 +9,7 @@ def validate_emails(email) -> [str, bool]:
     :return: str if is all Ok and False if what wrong.
     """
     if len(email.data) < 7:
-        raise ValidationError(
-            "We're sorry! Your email has less than the 7 symbols."
-            )
+        raise ValidationError("We're sorry! Your email has less than the 7 symbols.")
     try:
         emailinfo = validate_email(email.data, check_deliverability=False)
         email = emailinfo.normalized

@@ -1,37 +1,30 @@
-"""Flask application's page"""
+"""Flask a bases application's page"""
 
-import os
-
-from flask import Flask, session
+from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
-from flask_cors import CORS
 
-from dotenv_ import (EMAIL_HOST, EMAIL_PORT, MAIL_DEFAULT_SENDER,
-                     MAIL_PASSWORD, MAIL_USE_TLS, MAIL_USERNAME,
-                     PROJECT_REFERRAL_SECRET_KEY,
+from dotenv_ import (EMAIL_HOST, EMAIL_PORT, MAIL_DEFAULT_SENDER, MAIL_PASSWORD,
+                     MAIL_USE_TLS, MAIL_USERNAME, PROJECT_REFERRAL_SECRET_KEY,
                      PROJECT_REFERRAL_SETTING_POSTGRES_DB,
                      PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
                      PROJECT_REFERRAL_SETTING_POSTGRES_PASSWORD,
                      PROJECT_REFERRAL_SETTING_POSTGRES_PORT,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_USER,
-                     PROJECT_REFERRAL_HOST_TO_BACKEND,
-                     PROJECT_REFERRAL_PROTOCOL_TO_BACKEND,
-                     PROJECT_REFERRAL_PORT_TO_BACKEND
-                     )
+                     PROJECT_REFERRAL_SETTING_POSTGRES_USER)
 
 
 def create_flask() -> dict:
     """
+    This is base Flask.
     Here is a basis function of flask. That is start
     :return: app flask
     """
     app = Flask(__name__, template_folder="templates")
     # Clear session or perform any necessary logout logic
-   
+
     app.config.from_object(__name__)
     # jwt = JWTManager(app)
     csrf = CSRFProtect(app)
@@ -63,16 +56,6 @@ def create_flask() -> dict:
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = "login"
-    # host = f"{PROJECT_REFERRAL_PROTOCOL_TO_BACKEND}://{PROJECT_REFERRAL_HOST_TO_BACKEND}:{PROJECT_REFERRAL_PORT_TO_BACKEND}"
-    host = 'http://127.0.0.1:5000'
-    # CORS , resources={r"/api/v1/*": {"origins": str(host)}}
-    # cors = CORS(app)
-
-    
-    # clear session
-    # @app.before_request
-    # def clear_session():
-    #     session.clear()
 
     return {
         "app": app,
@@ -80,7 +63,6 @@ def create_flask() -> dict:
         "csrf": csrf,
         "bcrypt": bcrypt,
         "login_manager": login_manager,
-        
     }
 
 

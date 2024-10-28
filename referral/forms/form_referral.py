@@ -1,5 +1,8 @@
+"""
+Flask form for page registration
+"""
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, validators
+from wtforms import (StringField, SubmitField, validators)
 
 from referral.forms.validators import validate_emails
 
@@ -12,6 +15,7 @@ class GetFormReferralCode(FlaskForm):
     :param 'description' This a description into the range of 0 to 150 symbol.
     It's a marker for a referral-code.
     """
+
     #
     # email = StringField(
     #     "email",
@@ -31,7 +35,7 @@ class GetFormReferralCode(FlaskForm):
         ],
     )
     submit = SubmitField("Make", render_kw={"class": "btn btn-secondary"})
-    
+
     def validator_register_email(self, email: [dict, object]):
         """
         This is a email's validator.
