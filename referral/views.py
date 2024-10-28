@@ -11,7 +11,9 @@ from dotenv_ import TOKEN_TIME_MINUTE_EXPIRE
 from referral.flasker import app_, login_manager
 
 from .interfaces.files import receive_pathname_js_file
-from .models import Session, Users
+from .models import Session
+from .models_more.model_users import Users
+
 from .views_more.views_account import views_accouts
 from .views_more.views_profile import views_profiles
 from .views_more.views_referral import views_referrals
@@ -81,7 +83,7 @@ async def app_router() -> str:
             # Предположим, получаем данные из формы
             # Преобразование данных формы в словарь
             # params = request.form.to_dist()
-            pass
+
             # Below, receive the JS file name.
             js_file_name = receive_pathname_js_file()
         return render_template("index.html", message=None, js_file_name=js_file_name)

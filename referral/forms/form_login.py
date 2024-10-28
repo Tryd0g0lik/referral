@@ -29,4 +29,4 @@ class GetFormAuthorization(FlaskForm):
         ],
     )
 
-    submit = SubmitField("LoginIn", render_kw={"class": "btn btn-secondary"})
+    submit = SubmitField("Login", render_kw={"class": "btn btn-secondary"})
