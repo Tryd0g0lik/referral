@@ -193,12 +193,6 @@ async def views_accouts(app_) -> app_type:
                         user.is_active = True
                         # for_cookie_data = user.activation_token
                         data_number = user.id
-                        # COOKIE
-                        # httponly=True
-                        # resp_cookie = make_response('Cookie is set')
-                        # resp_cookie.set_cookie('user_token',
-                        #                        user.activation_token,
-                        #                        )
 
                         sess.commit()
                         sess.close()
@@ -209,7 +203,7 @@ async def views_accouts(app_) -> app_type:
                                 "profiles",
                                 title="Profile",
                                 message=message,
-                                data_number=data_number,
+                                data_number=data_number
                             )
                         )
 

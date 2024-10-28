@@ -52,64 +52,65 @@ async def views_referrals(app_):
     @app_.route("/profile/referral/add", methods=["POST"])
     @login_required
     async def referral_add():
-        """This present a list of referral-code
-        При авторизации надо в куки разместить ключ пользователя.
-        """
+        return redirect(url_for("profiles"))
+#         """This present a list of referral-code
+#         При авторизации надо в куки разместить ключ пользователя.
+#         """
         # Below, receive the JS file name.
-        js_file_name = receive_pathname_js_file()
-        message = "OK"
-        form = GetFormReferralCode()
-        if request.method == "POST" and form.validate_on_submit():
-            """Descript receive for referrals code """
-            # strBool = form.validator_register_email(form.email)
-            # if type(strBool) == bool:
-            #     message="Your email address did not go checking!"
-            #     response = jsonify(
-            #         message=message,
-            #     )
-            #     return response
-            #
-            # email = strBool[0:]
-            
-            description = [
-                d.data if d and len(d.data) > 0 else "" for d in [form.description]
-            ]
-
-            sess = Session()
-            try:
-                email = ""
-                u = sess.query(Users).filter_by(email=email).first()
-                if u.email == email:
-                    message = "Данный email уже был"
-                    return redirect(url_for("profiles", message=message))
-                ref = Referrals(u)
-                ref.description = description[0]
-                ref.is_send = True
-                sess.add(ref)
-                sess.commit()
-            except Exception as e:
-                print(
-                    f"""[referral_add]: Something what wrong!
-Error => {e}"""
-                )
-
-            finally:
-                sess.close()
-
-            """"
-            generate_unique_referral_code
-            Проверить наличие почты в базе .
-            После создать ссылку
-            хешировать.
-            """
-
-        return render_template(
-            "users/referral_code.html",
-            title="Создать referral code",
-            form=form,
-            message=message,
-            js_file_name=js_file_name,
-        )
+        # js_file_name = receive_pathname_js_file()
+        # message = "OK"
+        # form = GetFormReferralCode()
+#         if request.method == "POST" and form.validate_on_submit():
+#             """Descript receive for referrals code """
+#             # strBool = form.validator_register_email(form.email)
+#             # if type(strBool) == bool:
+#             #     message="Your email address did not go checking!"
+#             #     response = jsonify(
+#             #         message=message,
+#             #     )
+#             #     return response
+#             #
+#             # email = strBool[0:]
+#
+#             description = [
+#                 d.data if d and len(d.data) > 0 else "" for d in [form.description]
+#             ]
+#
+#             sess = Session()
+#             try:
+#                 email = ""
+#                 u = sess.query(Users).filter_by(email=email).first()
+#                 if u.email == email:
+#                     message = "Данный email уже был"
+#                     return redirect(url_for("profiles", message=message))
+#                 ref = Referrals(u)
+#                 ref.description = description[0]
+#                 ref.is_send = True
+#                 sess.add(ref)
+#                 sess.commit()
+#             except Exception as e:
+#                 print(
+#                     f"""[referral_add]: Something what wrong!
+# Error => {e}"""
+#                 )
+#
+#             finally:
+#                 sess.close()
+#
+#             """"
+#             generate_unique_referral_code
+#             Проверить наличие почты в базе .
+#             После создать ссылку
+#             хешировать.
+#             """
+#
+#         return render_template(
+#             "users/referral_code.html",
+#             title="Создать referral code",
+#             form=form,
+#             message=message,
+#             js_file_name=js_file_name,
+#         )
 
     @app_.route("/profile/referral/change", methods=["POST", "GET"])
     @login_required

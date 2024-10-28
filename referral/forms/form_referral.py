@@ -17,15 +17,6 @@ class GetFormReferralCode(FlaskForm):
     It's a marker for a referral-code.
     """
 
-    #
-    # email = StringField(
-    #     "email",
-    #     validators=[
-    #         validators.InputRequired(),
-    #         validators.Email(),
-    #         validators.DataRequired(),
-    #     ],
-    # )
     description = StringField(
         "Описание",
         validators=[

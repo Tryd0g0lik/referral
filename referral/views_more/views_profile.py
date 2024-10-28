@@ -30,7 +30,7 @@ async def views_profiles(app_) -> app_type:
     async def profiles() -> str:
         """Opening a page for the user authorized
         This present a list of referral-code"""
-
+        data_number = request.url.split('data_number=')
         message = [
             m.args["message"] if len(m.args) > 0 and m.args["message"] else "Profile"
             for m in [request]
@@ -38,26 +38,31 @@ async def views_profiles(app_) -> app_type:
 
         GetFormAuthorization()
         sess = Session()
-        csrf_token = generate_csrf()
+        csrf_token = generate_csrf() # Remove !?!?!?!?
         # Below, receive the JS file name.
         js_file_name = receive_pathname_js_file()
 
         # Below, change the conditions 'referral_obj_list' value. !!!!!
-        referral_obj_list = sess.query(Referrals).filter(id != 0).all()
-
-        if len(referral_obj_list) > 0:
-            referral_list = [r.__dict__ for r in referral_obj_list]
-            web_host = request.host_url
-
-            return render_template(
-                "users/profile.html",
-                title="Dashboard",
-                message=message,
-                contain=referral_list,
-                web_host=web_host,
-                js_file_name=js_file_name,
-                csrf_token=csrf_token,
-            )
+        referral_obj_list = []
+        if len(data_number) > 1:
+            user_id = int(data_number[1])
+            referral_obj_list = \
+                [sess.query(Referrals).filter_by(user_id=user_id).first()]
+            if not referral_obj_list[0]:
+                referral_obj_list = []
+            if len(referral_obj_list) > 0:
+                referral_list = [r.__dict__ for r in referral_obj_list]
+                web_host = request.host_url
+    
+                return render_template(
+                    "users/profile.html",
+                    title="Dashboard",
+                    message=message,
+                    contain=referral_list,
+                    web_host=web_host,
+                    js_file_name=js_file_name,
+                    csrf_token=csrf_token,
+                )
         return render_template(
             "users/profile.html",
             title="Dashboard",
