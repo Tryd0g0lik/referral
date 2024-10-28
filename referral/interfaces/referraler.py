@@ -9,10 +9,9 @@ import string
 from email.mime.text import MIMEText
 
 
-
 def send_email(to_email: str, subject, body):
     """
-    
+
     Work with a referral code.
     Sending a referral code by user's emails.
     :param to_email: str

@@ -1,4 +1,5 @@
 """Hare a token generating and pass to function 'send_activation_email' """
+
 from datetime import datetime
 
 from referral.interfaces.tokenization import EmailToGenerateToken

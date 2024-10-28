@@ -2,6 +2,7 @@
 Here is a table's model for db.
 This a table for saving of referral code.
 """
+
 from datetime import datetime
 from typing import Any
 
@@ -20,6 +21,7 @@ class Referrals(Base):
     This is a model Referral of table in db.
     This a table for saving of referral code.
     """
+
     __tablename__ = "referrals"
 
     id = sq.Column(sq.Integer, primary_key=True)

@@ -2,6 +2,7 @@
 Here is an abstract table. This table is inherit
 from the flask's 'DeclarativeBase.
 '"""
+
 from sqlalchemy.orm import DeclarativeBase
 
 

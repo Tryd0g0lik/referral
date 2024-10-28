@@ -3,7 +3,7 @@ Flask form for page registration
 """
 
 from flask_wtf import FlaskForm
-from wtforms import (BooleanField, StringField, SubmitField, validators)
+from wtforms import BooleanField, StringField, SubmitField, validators
 
 from referral.forms.validators import validate_emails
 

@@ -1,4 +1,5 @@
 """Email's message sending to the users email"""
+
 from flask_mail import Message
 
 from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
@@ -7,7 +8,7 @@ from referral.flasker import mail
 
 
 def send_activation_email(user_email, token):
-    """"
+    """ "
     Here a message send to the user's Email.
     :param user_email: str. It is addressee.
     :param token: str. Max length is 150 symbols.

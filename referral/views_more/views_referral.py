@@ -1,8 +1,8 @@
 """This is a postman for the flask's route.
 This a route has logic for work with the referral code
 """
-from flask import (redirect, render_template, request, url_for)
 
+from flask import redirect, render_template, request, url_for
 from flask_login import login_required
 
 from referral.forms.form_referral import GetFormReferralCode
@@ -12,13 +12,11 @@ from referral.models_more.model_referral import Referrals
 from referral.models_more.model_users import Users
 
 
-
 async def views_referrals(app_):
     """
     This is a postman for the flask's route.
     This a route has logic for work with the referral code
     """
-
 
     @app_.route(
         "/profile/referral",
@@ -45,13 +43,11 @@ async def views_referrals(app_):
             js_file_name=js_file_name,
         )
 
-
     @app_.route("/profile/referral/delete", methods=["GET", "POST"])
     @login_required
     async def referral_delete():
         """This present a list of referral-code"""
         pass
-
 
     @app_.route("/profile/referral/add", methods=["POST"])
     @login_required
@@ -112,7 +108,6 @@ Error => {e}"""
             message=message,
             js_file_name=js_file_name,
         )
-
 
     @app_.route("/profile/referral/change", methods=["POST", "GET"])
     @login_required

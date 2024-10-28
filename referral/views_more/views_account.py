@@ -1,10 +1,9 @@
 """Views of account"""
 
-from datetime import (datetime, timedelta)
+from datetime import datetime, timedelta
 
 from cfgv import ValidationError
-from flask import request
-from flask import (flash, redirect, render_template, url_for)
+from flask import flash, redirect, render_template, request, url_for
 from flask_login import login_user
 
 # ENVIRONMENT
@@ -20,7 +19,6 @@ from referral.interfaces.tokenization import EmailToGenerateToken
 from referral.interfaces.user_login import UserLogin
 from referral.models import Session
 from referral.models_more.model_users import Users
-
 from referral.postman.postman_tokens import postman_token
 
 
@@ -30,7 +28,6 @@ async def views_accouts(app_) -> app_type:
     :param app_: This is a flask's app
     :return: app_
     """
-
 
     # s = URLSafeTimedSerializer(app_.secret_key)
     #
@@ -151,7 +148,6 @@ async def views_accouts(app_) -> app_type:
             js_file_name=js_file_name,
         )
 
-
     @app_.route(
         "/login",
         methods=["GET", "POST"],
@@ -256,7 +252,6 @@ async def views_accouts(app_) -> app_type:
             js_file_name=js_file_name,
         )
 
-
     @app_.route(
         "/activate/<token>",
         methods=["GET", "POST"],
@@ -306,7 +301,6 @@ async def views_accouts(app_) -> app_type:
         finally:
             sess.commit()
             sess.close()
-
 
     @app_.route(
         "/repeat_token",

@@ -2,6 +2,7 @@
 Project has dynamic name of js file.
 Here we receive a js-file name.
 """
+
 import os
 
 

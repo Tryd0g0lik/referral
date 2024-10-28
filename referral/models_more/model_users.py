@@ -14,8 +14,7 @@ class Users(Base):
 
     id = sq.Column(sq.Integer, primary_key=True)
     firstname = sq.Column("user_name", sq.String(50), nullable=False)
-    email = sq.Column("email_address", sq.String(50), nullable=False,
-                      unique=True)
+    email = sq.Column("email_address", sq.String(50), nullable=False, unique=True)
     password = sq.Column("password", sq.String(150), nullable=False)
     send = sq.Column("sender", sq.Boolean())
     is_activated = sq.Column("is_activated", sq.Boolean())
@@ -30,8 +29,7 @@ class Users(Base):
 
     def set_password(self, password: str):
         """Set of password's hash"""
-        self.password_hash = \
-            bcrypt.generate_password_hash(password).decode("utf-8")
+        self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password: str):
         """Passwords checking"""

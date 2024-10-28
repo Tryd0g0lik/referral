@@ -1,6 +1,7 @@
 """
 This a page contain the form model.
 """
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, validators
 
