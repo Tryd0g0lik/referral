@@ -63,6 +63,7 @@ def create_flask() -> dict:
         "csrf": csrf,
         "bcrypt": bcrypt,
         "login_manager": login_manager,
+        
     }
 
 
