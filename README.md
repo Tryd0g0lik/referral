@@ -77,7 +77,7 @@ Note: Для работы с JS `[JS-файлами](src/sripts)
 ![main.png](img/main.png)
 
 <details closed>
-<summary>TOP-овое меню. Описание.</summary>
+<summary style="color:#0af098;">TOP-овое меню. Описание.</summary>
 
 ### Меню
 Меню:
@@ -240,7 +240,7 @@ class Referrals(Base):
 </details>
 
 <details closed>
-<summary>Дополнительно</summary>
+<summary style="color:#0af098;">Дополнительно</summary>
 
 ###  Forms 
 
