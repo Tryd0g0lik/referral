@@ -19,7 +19,11 @@ async def views_services(app_) -> app_type:
     @login_required
     async def get_token():
         """
-        This a function return user's 'activation_token' from db.
+         This is API "/api/v1/token/get" method "POST"
+         This API return the user's token ('activation_token') from
+          db (Users).
+          But, first, us up need the 'user_id' will be receive.
+          Then knowing 'user_id' , receive 'activation_token'.
         :return: JSON response which
         has a '{"user_token": < user_token >}'
         or '{"message": "Not OK. Something what wrong "}'
@@ -67,10 +71,47 @@ async def views_services(app_) -> app_type:
     
     @app_.route("/api/v1/referral/add", methods=["OPTIONS", "POST"])
     @login_required
-    async def get_referral_code():
+    async def add_referral_code():
+        """
+        This is API "/api/v1/referral/add" method "POST".
+        
+        Entry point receiving JSON-string '
+        {
+          "userToken": < your_token >,
+          "descript": < your_description > or "{Make}"
+        }'.
+        
+        This API return the user's token ('activation_token' look above) from
+         db (Referrals). But, first, us up need
+          the 'user_id' get and make check.
+        :param: 'user_token': string. Through 'user_token' we get the 'user_id'.
+        By 'user_id' , checking the presence 'referral_code' in db.
+        If a  object is result verification 'referral_code' (from
+        the table db "referrals"), return  a JSON-string
+        '{"message": "Нв email ссылка уже опубликована",
+                         "descript": None,
+                         "referral": None,
+                         }' asn status code 200.
+        or add the new line.
+        :param: 'description': string. By a default value -
+          '{Make}' or text of user.
+        
+        :return: Receive a new token's code if all Ok.
+        '{'message': "OK", "descript": < your_description >,
+            'referral': < your_referral_code> }' and
+        status 200.
+        If not all OK, receiving
+        '{"message": "Not Ok",
+         "descript": None,
+          "referral": None, }' and
+        status 400.
+        """
         from referral.interfaces.corser import _build_cors_preflight_response
         sess = Session()
-        response = jsonify({"message": "Not Ok"}), 400
+        response = jsonify({"message": "Not Ok",
+                            "descript": None,
+                            "referral": None,
+                            }), 400
         try:
             if request.method == "OPTIONS":
                 return _build_cors_preflight_response()
@@ -88,7 +129,10 @@ async def views_services(app_) -> app_type:
                     return response
                 response = \
                     jsonify(
-                        {"message": "Нв email ссылка уже опубликована"}
+                        {"message": "Нв email ссылка уже опубликована",
+                         "descript": None,
+                         "referral": None,
+                         }
                     ), 200
                 user_index = user.id
                 sess.close()
@@ -118,8 +162,89 @@ async def views_services(app_) -> app_type:
         finally:
             sess.close()
             return response
-    
 
+    @app_.route("/api/v1/referral/get", methods=["OPTIONS", "POST"])
+    @login_required
+    async def get_referral_code():
+        """
+        This is API "/api/v1/referral/get" method "POST"
+        
+         Entry point receiving JSON-string '
+        {
+          "userToken": < your_token >,
+        }'.
+        
+        This API return the user's token ('activation_token' look above) from
+         db (Referrals). But, first, us up need
+          the 'user_id' get and make check.
+        :param: 'user_token': string. Through 'user_token' we get the 'user_id'.
+        By 'user_id' , checking the presence 'referral_code' in db.
+        If a object is result of verification 'referral_code' (from
+        the table db "referrals"),
+         :return: a JSON-string
+        '{"message": "Нв email ссылка уже опубликована",
+                         "descript": < description > ,
+                         "referral": < referral_code >,
+                         }' and status code 200.
+        or  '{'message': "Пользователь не имеет referral-кода.",
+                     "descript": None,
+                     "referral": None,}' and status code 200.
+        If not all OK
+        '{"message": "Not Ok",
+          "descript": None,
+          'referral': None }' and
+        status code 400.
+        
+        """
+        from referral.interfaces.corser import _build_cors_preflight_response
+        sess = Session()
+        response = jsonify({"message": "Not Ok", 
+                            "descript": None, 
+                            "referral": None,}), 400
+        try:
+            if request.method == "OPTIONS":
+                return _build_cors_preflight_response()
+
+            data = request.get_json()
+            user_token = data.get('userToken')
+            
+            # Is search the user
+            user = sess.query(Users) \
+                .filter_by(activation_token=user_token).first()
+            
+            if not user:
+                return response
+            response = \
+                jsonify(
+                    {"message": "Пользователь не найден.", 
+                     "descript": None,
+                     "referral": None}
+                ), 200
+            sess.close()
+            user_referral = sess.query(Referrals).filter_by(user_id=user.id)\
+                .first()
+            if not user_referral:
+                response = jsonify(
+                    {'message': "Пользователь не имеет referral-кода.",
+                     "descript": None,
+                     "referral": None,}
+                ), 200
+                
+            response = jsonify(
+                {'message': "OK", 
+                 "descript": user_referral.description,
+                 "referral": user_referral.referral_code}
+            ), 200
+            
+        except Exception as e:
+            print(
+                f"""[referral_add]: Something what wrong!
+        Error => {e}"""
+            )
+
+        finally:
+            sess.close()
+            return response
     
     @app_.route("/csrf_token", methods=["GET"])
     def get_csrf_token():
