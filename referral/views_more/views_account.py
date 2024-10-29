@@ -15,6 +15,7 @@ from referral.forms.form_login import GetFormAuthorization
 from referral.forms.form_registration import GetFormRegistration
 from referral.forms.form_token_second import GetFormForToken
 from referral.interfaces.files import receive_pathname_js_file
+from referral.interfaces.referraler import generate_referral_code
 from referral.interfaces.tokenization import EmailToGenerateToken
 from referral.interfaces.user_login import UserLogin
 from referral.models import Session
@@ -28,7 +29,87 @@ async def views_accouts(app_) -> app_type:
     :param app_: This is a flask's app
     :return: app_
     """
-
+    
+    def register_new_user(form, js_file_name, post=True):
+        """
+        This a function is working by request the 'POST' when user
+         pass registration.
+        And, a 'GET' when user pass registration by referral code/
+        :param form: object of form.
+        :param js_file_name: JS's file name.
+        :param post: boolean/ If a True - this means a request 'POST', was.
+        And a 'False'.
+        :return: user: object
+        """
+        # Pass the form's email field
+        class Email:
+            """Заглушка"""
+            def __init__(self, email):
+                self.data = email
+        email = Email("new_user@mail.ru")
+        strBool = form.validator_register_email(email)
+        if post:
+            strBool = form.validator_register_email(form.email)
+        if type(strBool) == bool:
+            return render_template(
+                "users/register.html",
+                form=form,
+                message="Your email address did not go checking!",
+                js_file_name=js_file_name,
+            )
+        # copy
+        normalized_email = strBool[0:]
+    
+        new_user = Users()
+        firstname = "Newuser"
+        password = generate_referral_code(5)
+        password2 = password
+        if post:
+            password = form.password.data
+            firstname = form.firstname.data
+            password2 = form.password2.data
+        
+            
+        if password != password2:
+                return render_template(
+                    "users/register.html",
+                    form=form,
+                    message="Passwords do not match.",
+                    # Below, receive the JS file name.
+                    js_file_name=js_file_name,
+                )
+        new_user.firstname = firstname
+    
+        # Check a field empty
+        if not password:
+            return render_template(
+                "users/register.html",
+                form=form,
+                message="Password cannot be empty.",
+                js_file_name=js_file_name,
+            )
+        password_hash = password
+        if post:
+            new_user.set_password(password)
+            password_hash = new_user.password_hash
+    
+        user = Users(
+            firstname=new_user.firstname,
+            email=normalized_email,
+            password=password_hash,
+            send=True,
+            is_activated=False,
+            is_active=False,
+        )
+    
+        if normalized_email and post:
+            # First sending the token to the user's email. This an event
+            # when user itself beginning registration.
+            postman_token(normalized_email, user, app_)
+            error = "OK"
+        else:
+            error = "NOT OK"
+        return user
     # s = URLSafeTimedSerializer(app_.secret_key)
     #
     # def generate_token(email: str) -> str:
@@ -54,60 +135,7 @@ async def views_accouts(app_) -> app_type:
         sess = Session()
         if request.method == "POST" and form.validate_on_submit():
             try:
-                # Pass the form's email field
-                strBool = form.validator_register_email(form.email)
-                if type(strBool) == bool:
-                    return render_template(
-                        "users/register.html",
-                        form=form,
-                        message="Your email address did not go checking!",
-                        js_file_name=js_file_name,
-                    )
-                normalized_email = strBool[0:]
-                firstname = form.firstname.data
-                password = form.password.data
-                password2 = form.password2.data
-                # Check a field empty
-                if not password:
-
-                    return render_template(
-                        "users/register.html",
-                        form=form,
-                        message="Password cannot be empty.",
-                        js_file_name=js_file_name,
-                    )
-
-                if password != password2:
-
-                    return render_template(
-                        "users/register.html",
-                        form=form,
-                        message="Passwords do not match.",
-                        # Below, receive the JS file name.
-                        js_file_name=js_file_name,
-                    )
-
-                new_user = Users()
-                new_user.firstname = firstname
-                new_user.set_password(password)
-                password_hash = new_user.password_hash
-
-                user = Users(
-                    firstname=new_user.firstname,
-                    email=normalized_email,
-                    password=password_hash,
-                    send=True,
-                    is_activated=False,
-                    is_active=False,
-                )
-
-                if normalized_email:
-                    # First sending the token to the user's email. This an event
-                    # when user itself beginning registration.
-                    postman_token(normalized_email, user, app_)
-                    error = "OK"
-                else:
-                    error = "NOT OK"
+                user = register_new_user(form, js_file_name)
                 sess.add(user)
                 sess.commit()
 
@@ -221,15 +249,35 @@ async def views_accouts(app_) -> app_type:
             elif not form_loginin.validate_on_submit():
                 print(f"[login]: Not validate_on_submit => {form_loginin.errors}")
 
-        elif request.args.get("token") and len(request.args.get("token")) > 10:
+        elif request.args.get("token"):
+            if len(request.args.get("token")) <= 12:
+                if request.method == "GET":
+                    user_all = sess.query(Users)\
+                        .filter_by(activation_token=request.args.get("token"))\
+                        .all()
+                    user = register_new_user(form_loginin, js_file_name, False)
+                    user.is_activated = True
+                    user.activation_token = request.args.get("token")
+                    user.is_active = True
+                    user.date = datetime.utcnow()
+                    user.id=(len(list(user_all)) + 1)
+                    sess.add(user)
+                    sess.commit()
+                    
+                    message = f" Login {user.email} & password {user.password}"
             try:
                 user = (
-                    sess.query(Users)
-                    .filter_by(activation_token=request.args.get("token"))
-                    .first()
+                    sess.query(Users).filter_by(activation_token=request.args.get("token")).first()
                 )
                 if user:
-                    login_user(user)
+                    userlogin = UserLogin()
+                    userlogin.create(user)
+                    userlogin.is_authenticated()
+                    userlogin.is_anonymous()
+                    userlogin.is_active()
+                    userlogin.get_id()
+                    login_user(userlogin)
+                    # login_user(user)
                 else:
                     message = f"[login]: User invalid"
             except Exception as err:
@@ -237,7 +285,8 @@ async def views_accouts(app_) -> app_type:
             finally:
                 sess.commit()
                 sess.close()
-
+        
+            
         return render_template(
             "users/login.html",
             title="Авторизация",

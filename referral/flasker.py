@@ -6,7 +6,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
-
+from werkzeug.routing import BaseConverter
 from dotenv_ import (EMAIL_HOST, EMAIL_PORT, MAIL_DEFAULT_SENDER, MAIL_PASSWORD,
                      MAIL_USE_TLS, MAIL_USERNAME, PROJECT_REFERRAL_SECRET_KEY,
                      PROJECT_REFERRAL_SETTING_POSTGRES_DB,
@@ -15,7 +15,11 @@ from dotenv_ import (EMAIL_HOST, EMAIL_PORT, MAIL_DEFAULT_SENDER, MAIL_PASSWORD,
                      PROJECT_REFERRAL_SETTING_POSTGRES_PORT,
                      PROJECT_REFERRAL_SETTING_POSTGRES_USER)
 
-
+class RegexConverter(BaseConverter):
+    def __init__(self, url_map, regex):
+        super(RegexConverter, self).__init__(url_map)
+        self.regex = regex
+        
 def create_flask() -> dict:
     """
     This is base Flask.
@@ -35,7 +39,7 @@ def create_flask() -> dict:
 {PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/\
 {PROJECT_REFERRAL_SETTING_POSTGRES_DB}"
     app.config["SQLALCHEMY_DATABASE_URI"] = DSN
-
+    app.url_map.converters['regex'] = RegexConverter
     app.config["JWT_COOKIE_SECURE"] = True
     # app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     bcrypt = Bcrypt(app)

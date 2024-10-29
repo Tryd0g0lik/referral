@@ -3,7 +3,7 @@
 from flask_mail import Message
 
 from dotenv_ import (PROJECT_REFERRAL_SETTING_POSTGRES_HOST,
-                     PROJECT_REFERRAL_SETTING_POSTGRES_PORT)
+                     PROJECT_REFERRAL_PORT_TO_BACKEND)
 from referral.flasker import mail
 
 
@@ -13,7 +13,7 @@ def send_activation_email(user_email, token):
     :param user_email: str. It is addressee.
     :param token: str. Max length is 150 symbols.
     """
-    activation_link = f"http://{PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:{PROJECT_REFERRAL_SETTING_POSTGRES_PORT}/activate/{token}"
+    activation_link = f"http://{PROJECT_REFERRAL_SETTING_POSTGRES_HOST}:{PROJECT_REFERRAL_PORT_TO_BACKEND}/activate/{token}"
     try:
         msg = Message(subject="Activate Your Account", recipients=[user_email])
         msg.body = f"Please click the link to activate your account: {activation_link}"

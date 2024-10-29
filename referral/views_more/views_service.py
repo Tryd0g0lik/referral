@@ -2,7 +2,7 @@
 For a work with API-request.
 """
 
-from flask import jsonify, request
+from flask import jsonify, request, redirect, url_for
 from flask_login import login_required
 from flask_wtf.csrf import generate_csrf
 
@@ -19,7 +19,7 @@ async def views_services(app_) -> app_type:
     @login_required
     async def get_token():
         """
-         This is API "/api/v1/token/get" method "POST"
+         This is API "/api/v1/token/get" method "POST".
          This API return the user's token ('activation_token') from
           db (Users).
           But, first, us up need the 'user_id' will be receive.
@@ -245,6 +245,42 @@ async def views_services(app_) -> app_type:
         finally:
             sess.close()
             return response
+
+    @app_.route('/<regex("[\w\d]{5,}"):referral_code>', methods=["GET"])
+    async def get_authorization_referral_code(referral_code: str):
+        sess = Session();
+        response = \
+            jsonify(
+                {"message": "ссылка не найдена",
+                 "descript": None,
+                 "referral": None}
+            ), 404
+        try:
+            reff = sess.query(Referrals).filter_by(referral_code=referral_code)\
+                .first()
+            if not reff:
+                return response
+            if reff.is_activated:
+                return jsonify(
+                    {"message": "Ссылка устарела.",
+                     "descript": None,
+                     "referral": None}
+                ), 200
+            reff.is_activated = True
+            sess.add(reff)
+            sess.commit()
+            return redirect(url_for("login",
+                                    message="Ok",
+                                    descript="Первые введенные данные зайт \
+запомнит как регистрация аккаунта.",
+                                    token=referral_code))
+        except Exception as e:
+            print(f"[get_authorization_referral_code]: Error => {e.__str__()}")
+            return redirect(url_for("login"))
+        finally:
+            sess.commit()
+            sess.close()
+            
     
     @app_.route("/csrf_token", methods=["GET"])
     def get_csrf_token():

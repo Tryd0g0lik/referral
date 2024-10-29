@@ -26,7 +26,7 @@ class GetFormForToken(FlaskForm):
 
     submit = SubmitField("Make", render_kw={"class": "btn btn-secondary"})
 
-    def validator_register_email(self, email: str) -> [str, bool]:
+    def validator_register_email(self, email) -> [str, bool]:
         """
         This is a email's validator.
         :param email: str. Min. Length is 7 symbols.
