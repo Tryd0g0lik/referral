@@ -7,9 +7,6 @@ from flask_login import login_required
 
 from referral.forms.form_referral import GetFormReferralCode
 from referral.interfaces.files import receive_pathname_js_file
-from referral.models import Session
-from referral.models_more.model_referral import Referrals
-from referral.models_more.model_users import Users
 
 
 async def views_referrals(app_):
