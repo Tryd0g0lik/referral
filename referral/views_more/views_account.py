@@ -47,7 +47,7 @@ async def views_accouts(app_) -> app_type:
             """Заглушка"""
             def __init__(self, email):
                 self.data = email
-        email = Email(",")
+        email = Email("user_email@mail.ru")
         strBool = form.validator_register_email(email)
         if post:
             strBool = form.validator_register_email(form.email)
@@ -255,33 +255,34 @@ async def views_accouts(app_) -> app_type:
                         pseudo_password += user.pseudo_password
                     user.is_activated = True
                     user.activation_token = request.args.get("token")
-                    user.is_active = True
+                    # user.is_active = True
                     user.date = datetime.utcnow()
                     user.id = (len(list(user_all)) + 1)
                     sess.add(user)
                     sess.commit()
                     # Message is make to the browser
                     message = f" Login {user.email} & password {pseudo_password}"
-            try:
-                # activation of referral's user
-                user = (
-                    sess.query(Users).filter_by(activation_token=request.args.get("token")).first()
-                )
-                if user:
-                    userlogin = UserLogin()
-                    userlogin.create(user)
-                    userlogin.is_authenticated()
-                    userlogin.is_anonymous()
-                    userlogin.is_active()
-                    userlogin.get_id()
-                    login_user(userlogin)
-                else:
-                    message = f"[login]: User invalid"
-            except Exception as err:
-                message = f"[login]: Token invalid => {err.__str__()}"
-            finally:
-                sess.commit()
-                sess.close()
+                    try:
+                        # activation of referral's user
+                        user = (
+                            sess.query(Users).filter_by(activation_token=request.args.get("token")).first()
+                        )
+                        # Your logic
+                        # if user:
+                        #     userlogin = UserLogin()
+                        #     userlogin.create(user)
+                        #     userlogin.is_authenticated()
+                        #     userlogin.is_anonymous()
+                        #     userlogin.is_active()
+                        #     userlogin.get_id()
+                        #     login_user(userlogin)
+                        # else:
+                        #     message = f"[login]: User invalid"
+                    except Exception as err:
+                        message = f"[login]: Token invalid => {err.__str__()}"
+                    finally:
+                        sess.commit()
+                        sess.close()
         
             
         return render_template(

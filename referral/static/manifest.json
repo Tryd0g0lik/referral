@@ -1,6 +1,6 @@
 {
   "main.css": "/styles/style.css",
-  "main.js": "/scripts/main-main-e3378711d81d8addddfd.js",
+  "main.js": "/scripts/main-main-7eb86927c34b17a5c935.js",
   "../templates/layout/basis.html": "/../templates/layout/basis.html",
   "../templates/users/register.html": "/../templates/users/register.html",
   "../templates/users/login.html": "/../templates/users/login.html",
@@ -8,7 +8,7 @@
   "../templates/users/token_repeat.html": "/../templates/users/token_repeat.html",
   "../templates/users/profile.html": "/../templates/users/profile.html",
   "../templates/users/password_change.html": "/../templates/users/password_change.html",
-  "../templates/users/profile_change.html": "/../templates/users/profile_change.html",
   "../templates/users/profile_delete.html": "/../templates/users/profile_delete.html",
+  "../templates/users/profile_change.html": "/../templates/users/profile_change.html",
   "../templates/index.html": "/../templates/index.html"
 }

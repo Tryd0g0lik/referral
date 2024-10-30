@@ -2,7 +2,7 @@
 For a work with API-request.
 """
 
-from flask import jsonify, request, redirect, url_for
+from flask import (jsonify, request, redirect, url_for)
 from flask_login import login_required
 from flask_wtf.csrf import generate_csrf
 
@@ -248,7 +248,7 @@ async def views_services(app_) -> app_type:
 
     @app_.route('/<regex("[\w\d]{5,}"):referral_code>', methods=["GET"])
     async def get_authorization_referral_code(referral_code: str):
-        sess = Session();
+        sess = Session()
         response = \
             jsonify(
                 {"message": "ссылка не найдена",
@@ -281,7 +281,70 @@ async def views_services(app_) -> app_type:
             sess.commit()
             sess.close()
             
-    
+    @app_.route("/api/v1/remove", methods=["POST", "OPTIONS"])
+    async def remove_profile():
+        from referral.interfaces.corser import _build_cors_preflight_response
+        sess = Session()
+        response = \
+            jsonify(
+                {"message": "профиль не найден",
+                 "descript": None,
+                 "referral": None}
+            ), 404
+        try:
+            if request.method == "OPTIONS":
+                return  _build_cors_preflight_response()
+            
+            data = request.get_json();
+            user_token = data.get("userToken")
+            
+            # Is search the user
+            user = sess.query(Users) \
+                .filter_by(activation_token=user_token).first()
+
+            if not user:
+                return response
+            response = \
+                jsonify(
+                    {"message": "Пользователь удален.",
+                     "descript": None,
+                     "referral": None}
+                ), 200
+            index = user.id
+            sess.close()
+            user_referral = sess.query(Referrals).filter_by(user_id=index) \
+                .first()
+            if not user_referral:
+                response = jsonify(
+                    {'message': "Пользователь не нaйден.",
+                     "descript": None,
+                     "referral": None,}
+                ), 200
+            else:
+                # Delete referral code the record
+                sess.delete(user_referral)
+                sess.commit()
+            sess.close()
+            
+            # re-search
+            user = sess.query(Users).filter_by(id=index) \
+                .first()
+            # Delete the record
+            sess.delete(user)
+            # #Commit change to the database
+            sess.commit()
+            sess.close()
+            return redirect(url_for("main_page"))
+        except Exception as e:
+            print(
+                f"""[remove_profile]: Something what wrong!
+            Error => {e}"""
+            )
+            return response
+        finally:
+            sess.close()
+            
+        
     @app_.route("/csrf_token", methods=["GET"])
     def get_csrf_token():
         """
