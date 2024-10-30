@@ -47,7 +47,7 @@ async def views_accouts(app_) -> app_type:
             """Заглушка"""
             def __init__(self, email):
                 self.data = email
-        email = Email("new_user@mail.ru")
+        email = Email(",")
         strBool = form.validator_register_email(email)
         if post:
             strBool = form.validator_register_email(form.email)
@@ -89,10 +89,8 @@ async def views_accouts(app_) -> app_type:
                 message="Password cannot be empty.",
                 js_file_name=js_file_name,
             )
-        password_hash = password
-        if post:
-            new_user.set_password(password)
-            password_hash = new_user.password_hash
+        new_user.set_password(password)
+        password_hash = new_user.password_hash
     
         user = Users(
             firstname=new_user.firstname,
@@ -102,14 +100,15 @@ async def views_accouts(app_) -> app_type:
             is_activated=False,
             is_active=False,
         )
-    
+        user.pseudo_password = ''
+        # 'pseudo_password' is a temporary password for referral's user.
+        if not post:
+            user.pseudo_password = password
+            return user
         if normalized_email and post:
             # First sending the token to the user's email. This an event
             # when user itself beginning registration.
             postman_token(normalized_email, user, app_)
-            error = "OK"
-        else:
-            error = "NOT OK"
         return user
     # s = URLSafeTimedSerializer(app_.secret_key)
     #
@@ -191,6 +190,8 @@ async def views_accouts(app_) -> app_type:
         # Below, receive the JS file name.
         js_file_name = receive_pathname_js_file()
         message = None
+        # 'pseudo_password' is a temporary password for referral's user
+        pseudo_password = ''
         if request.method == "POST":
             if form_loginin and form_loginin.validate_on_submit():
                 try:
@@ -250,6 +251,8 @@ async def views_accouts(app_) -> app_type:
                         .filter_by(activation_token=request.args.get("token"))\
                         .all()
                     user = register_new_user(form_loginin, js_file_name, False)
+                    if user.pseudo_password:
+                        pseudo_password += user.pseudo_password
                     user.is_activated = True
                     user.activation_token = request.args.get("token")
                     user.is_active = True
@@ -258,7 +261,7 @@ async def views_accouts(app_) -> app_type:
                     sess.add(user)
                     sess.commit()
                     # Message is make to the browser
-                    message = f" Login {user.email} & password {user.password}"
+                    message = f" Login {user.email} & password {pseudo_password}"
             try:
                 # activation of referral's user
                 user = (
