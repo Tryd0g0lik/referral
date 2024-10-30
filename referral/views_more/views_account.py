@@ -32,6 +32,7 @@ async def views_accouts(app_) -> app_type:
     
     def register_new_user(form, js_file_name, post=True):
         """
+        This is sub-function.
         This a function is working by request the 'POST' when user
          pass registration.
         And, a 'GET' when user pass registration by referral code/
@@ -124,7 +125,7 @@ async def views_accouts(app_) -> app_type:
     async def register():
         """
         With a function will run when we open the page. This page has a form
-        for registrations event
+        for registrations event.
         :return:
         """
         # Logic - registration
@@ -184,7 +185,7 @@ async def views_accouts(app_) -> app_type:
     async def login():
         """Opening a page of authorization"""
         # AUTHENTIFICATION logic
-        # greate a form
+        # create a form
         form_loginin = GetFormAuthorization()
         sess = Session()
         # Below, receive the JS file name.
@@ -197,17 +198,7 @@ async def views_accouts(app_) -> app_type:
                     email = form_loginin.email.data
                     password = form_loginin.password.data
                     user = sess.query(Users).filter_by(email=email).first()
-
-                    """
-                        На каком этапе лучше создавать хеш-пароль???
-                        Хешировать email или нет???
-                    """
-
-                    # Below comparing and checking the email and password
-                    """
-                        Сравнение проводить лучше в состоянии хеша или
-                        декодировать пароль, затем сравнивать???
-                    """
+                     # Below comparing and checking the email and password
                     if (user.email == email) and (user.check_password(password)):
                         # Make data to the profiles page
                         userlogin = UserLogin()
@@ -250,8 +241,11 @@ async def views_accouts(app_) -> app_type:
                 print(f"[login]: Not validate_on_submit => {form_loginin.errors}")
 
         elif request.args.get("token"):
+            # Below? for a referral's users
+            # 12 it is a pseudo password
             if len(request.args.get("token")) <= 12:
                 if request.method == "GET":
+                    # This is a registration's process of referral's user
                     user_all = sess.query(Users)\
                         .filter_by(activation_token=request.args.get("token"))\
                         .all()
@@ -260,12 +254,13 @@ async def views_accouts(app_) -> app_type:
                     user.activation_token = request.args.get("token")
                     user.is_active = True
                     user.date = datetime.utcnow()
-                    user.id=(len(list(user_all)) + 1)
+                    user.id = (len(list(user_all)) + 1)
                     sess.add(user)
                     sess.commit()
-                    
+                    # Message is make to the browser
                     message = f" Login {user.email} & password {user.password}"
             try:
+                # activation of referral's user
                 user = (
                     sess.query(Users).filter_by(activation_token=request.args.get("token")).first()
                 )
@@ -277,7 +272,6 @@ async def views_accouts(app_) -> app_type:
                     userlogin.is_active()
                     userlogin.get_id()
                     login_user(userlogin)
-                    # login_user(user)
                 else:
                     message = f"[login]: User invalid"
             except Exception as err:
@@ -300,12 +294,16 @@ async def views_accouts(app_) -> app_type:
         methods=["GET", "POST"],
     )
     async def activate(token):
-        """This is activation function"""
+        """
+        This an activation function is run when address's row received URL.
+        It is '< your_domen>.ru/activate/< token_from_email >'
+        :param token: str. 120 second It is his lifetime.
+        :return: redirect
+        """
         sess = Session()
 
         try:
             # LOGIC DECODE a token
-
             g = EmailToGenerateToken(app_)
             g.set_load_token(token)
             email = g.get_load_token()
@@ -351,7 +349,13 @@ async def views_accouts(app_) -> app_type:
     )
     @csrf.exempt
     async def repeat_token():
-        """This is activation function"""
+        """
+        This an activation function is run when we fill the line from
+        form 'GetFormForToken' and push a submit.
+        
+        Our token is making send (re-sending) to the email of user.
+        :return: redirect or render_template.
+        """
         sess = Session()
         form = GetFormForToken()
 
