@@ -20,3 +20,7 @@ div.row>div {
 .reff-view>div {
   display: inline-block;
 }
+.reff-view>div:last-of-type {
+  cursor: pointer;
+}
+

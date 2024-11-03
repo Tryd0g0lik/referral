@@ -7,6 +7,7 @@ from flask_login import login_required
 from flask_wtf.csrf import generate_csrf
 
 from referral.flasker import app_type
+from referral.interfaces.referral_code_remove import sub_defReferralCodeRemove
 from referral.models import Session
 from referral.models_more.model_referral import Referrals
 from referral.models_more.model_users import Users
@@ -88,7 +89,7 @@ async def views_services(app_) -> app_type:
         By 'user_id' , checking the presence 'referral_code' in db.
         If a  object is result verification 'referral_code' (from
         the table db "referrals"), return  a JSON-string
-        '{"message": "Нв email ссылка уже опубликована",
+        '{"message": "На email ссылка уже опубликована",
                          "descript": None,
                          "referral": None,
                          }' asn status code 200.
@@ -129,7 +130,7 @@ async def views_services(app_) -> app_type:
                     return response
                 response = \
                     jsonify(
-                        {"message": "Нв email ссылка уже опубликована",
+                        {"message": "На email ссылка уже опубликована",
                          "descript": None,
                          "referral": None,
                          }
@@ -283,49 +284,13 @@ async def views_services(app_) -> app_type:
             
     @app_.route("/api/v1/remove", methods=["POST", "OPTIONS"])
     async def remove_profile():
-        from referral.interfaces.corser import _build_cors_preflight_response
         sess = Session()
-        response = \
-            jsonify(
-                {"message": "профиль не найден",
-                 "descript": None,
-                 "referral": None}
-            ), 404
+        response: object = {}
         try:
-            if request.method == "OPTIONS":
-                return  _build_cors_preflight_response()
-            
-            data = request.get_json();
-            user_token = data.get("userToken")
-            
-            # Is search the user
-            user = sess.query(Users) \
-                .filter_by(activation_token=user_token).first()
-
-            if not user:
-                return response
-            response = \
-                jsonify(
-                    {"message": "Пользователь удален.",
-                     "descript": None,
-                     "referral": None}
-                ), 200
-            index = user.id
-            sess.close()
-            user_referral = sess.query(Referrals).filter_by(user_id=index) \
-                .first()
-            if not user_referral:
-                response = jsonify(
-                    {'message': "Пользователь не нaйден.",
-                     "descript": None,
-                     "referral": None,}
-                ), 200
-            else:
-                # Delete referral code the record
-                sess.delete(user_referral)
-                sess.commit()
-            sess.close()
-            
+            # Delete a referral code
+            result = sub_defReferralCodeRemove(sess)
+            index = result["index"]
+            response = result["response"]
             # re-search
             user = sess.query(Users).filter_by(id=index) \
                 .first()
@@ -343,8 +308,33 @@ async def views_services(app_) -> app_type:
             return response
         finally:
             sess.close()
-            
+
+    @app_.route("/api/v1/profile/referral/delete", methods=["POST", "OPTIONS"])
+    @login_required
+    async def referral_delete() -> object:
+        """
+        Removing referral code od user
+        :return: object from jsonify
+        """
+        sess = Session()
+        response: object = {}
+        try:
+            # Delete a referral code
+            result = sub_defReferralCodeRemove(sess)
+            index = result["index"]
+            response = result["response"]
         
+            sess.close()
+            return response
+        except Exception as e:
+            print(
+                f"""[remove_profile]: Something what wrong!
+                    Error => {e}"""
+            )
+            return response
+        finally:
+            sess.close()
+
     @app_.route("/csrf_token", methods=["GET"])
     def get_csrf_token():
         """

@@ -2,11 +2,13 @@
 This a route has logic for work with the referral code
 """
 
-from flask import redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for, jsonify
 from flask_login import login_required
 
 from referral.forms.form_referral import GetFormReferralCode
 from referral.interfaces.files import receive_pathname_js_file
+from referral.interfaces.referral_code_remove import sub_defReferralCodeRemove
+from referral.models import Session
 
 
 async def views_referrals(app_):
@@ -59,9 +61,5 @@ async def views_referrals(app_):
     async def referral_add():
         return redirect(url_for("profiles"))
 
-    @app_.route("/profile/referral/change", methods=["POST", "GET"])
-    @login_required
-    async def referral_change():
-        pass
 
     return app_
